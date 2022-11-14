@@ -17,3 +17,7 @@ body {
   margin: 0;
   padding: 0;
 }
+
+.children-center {
+  @apply flex justify-center items-center;
+}
