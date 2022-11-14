@@ -1,0 +1,3 @@
+* text=auto eol=lf charset=utf-8
+*.bat text eol=crlf charset=utf-8
+*.sh text=auto eol=lf charset=utf-8
