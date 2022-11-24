@@ -11,10 +11,18 @@ import { PlannedComponent } from '@/pages/planned/planned.component';
 import { ProjectsComponent } from '@/pages/projects/projects.component';
 import { HomeComponent } from '@/pages/home/home.component';
 import { NotFoundComponent } from '@/pages/not-found/not-found.component';
-import { TrakzLogoComponent } from '@/components/trakz-logo/trakz-logo.component';
+import { TrakzLogoComponent } from '@/components/svg/trakz-logo/trakz-logo.component';
 import { ImportantComponent } from '@/pages/important/important.component';
 import { MyDayComponent } from '@/pages/my-day/my-day.component';
 import { UserAvatarComponent } from '@/components/user-avatar/user-avatar.component';
+import { EmptyCalendarComponent } from '@/components/svg/empty-calendar/empty-calendar.component';
+import { EmptyMyDayHandleComponent } from './pages/my-day/empty-my-day-handle/empty-my-day-handle.component';
+import { AddTaskInputComponent } from './pages/my-day/add-task-input/add-task-input.component';
+import { TaskRowComponent } from './pages/my-day/task-row/task-row.component';
+import { LeftSideNavComponent } from './layouts/main-layout/left-side-nav/left-side-nav.component';
+import { TopNavbarComponent } from './layouts/main-layout/top-navbar/top-navbar.component';
+import { RightSideNavComponent } from './layouts/main-layout/right-side-nav/right-side-nav.component';
+import { TaskTextCardComponent } from './pages/my-day/task-row/task-text-card/task-text-card.component';
 
 @NgModule({
   declarations: [
@@ -29,6 +37,14 @@ import { UserAvatarComponent } from '@/components/user-avatar/user-avatar.compon
     HomeComponent,
     NotFoundComponent,
     UserAvatarComponent,
+    EmptyCalendarComponent,
+    EmptyMyDayHandleComponent,
+    AddTaskInputComponent,
+    TaskRowComponent,
+    LeftSideNavComponent,
+    TopNavbarComponent,
+    RightSideNavComponent,
+    TaskTextCardComponent,
   ],
   imports: [
     BrowserModule,
