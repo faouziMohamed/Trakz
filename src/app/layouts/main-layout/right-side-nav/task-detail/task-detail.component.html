@@ -1,0 +1,29 @@
+<div
+  class="flex pl-2 pt-1 bg-gray-300 bg-opacity-10 hover:bg-opacity-25 justify-between items-center"
+>
+  <div class="flex gap-1">
+    <mat-icon
+      [ngClass]="iconClasses"
+      class="basis-auto !w-[1rem] !h-[1.4rem] text-[1rem] shrink-0 !flex items-center"
+      matListIcon
+    >
+      {{ iconName }}
+    </mat-icon>
+    <p
+      [ngClass]="textClasses"
+      class="!text-[0.8rem] focus-visible:outline-none !font-[Ubuntu] !m-0"
+    >
+      {{ text }}
+    </p>
+  </div>
+  <button
+    class="basis-auto !flex !text-center items-center self-center"
+    mat-icon-button
+  >
+    <mat-icon
+      class="!text-[1.3rem] !flex !text-center items-center self-center text-gray-400"
+    >
+      close
+    </mat-icon>
+  </button>
+</div>

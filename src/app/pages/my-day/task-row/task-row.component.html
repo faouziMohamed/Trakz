@@ -1,0 +1,49 @@
+<div
+  (click)="setSelectedTask(task)"
+  *ngIf="task"
+  class="select-none cursor-pointer hover:bg-gray-200 active:scale-[1.01] active:bg-gray-100 focus-within:bg-gray-100 bg-gray-300 rounded px-4 py-2"
+>
+  <app-task-text-card [task]="task"></app-task-text-card>
+  <div
+    class="flex items-center text-gray-600 font-[Ubuntu] text-[0.68rem] gap-1"
+  >
+    <div *ngIf="task.isInMyDay" class="flex items-center gap-1">
+      <mat-icon class="text-[1.2rem]"> light_mode </mat-icon>
+      <span>My Day</span>
+      <span class="text-gray-700">•</span>
+    </div>
+
+    <div class="flex items-center gap-1">
+      <span> {{ task.parent }} </span>
+      <span class="text-gray-700">•</span>
+    </div>
+
+    <div *ngIf="task.steps.length" class="flex items-center gap-1">
+      <span>
+        {{ countCompletedTasks(task.steps) }} of
+        {{ task.steps.length }}
+      </span>
+      <span class="text-gray-700">•</span>
+    </div>
+
+    <div *ngIf="task.dueDate" class="flex items-center gap-1">
+      <span [ngClass]="{ 'text-red-500': isPassedDueDate(task.dueDate) }">
+        {{ task.dueDate | date: 'EEE, MMM d' }}
+      </span>
+    </div>
+
+    <div
+      *ngIf="task.recurrence !== 'once'"
+      class="flex items-center w-[0.89rem]"
+    >
+      <mat-icon class="flex items-center !h-[0.88rem] text-[0.89rem]">
+        cached
+      </mat-icon>
+    </div>
+    <div *ngIf="task.note" class="flex w-[0.89rem] items-center">
+      <mat-icon class="flex items-center !h-[0.88rem] text-[0.89rem]">
+        sticky_note_2
+      </mat-icon>
+    </div>
+  </div>
+</div>

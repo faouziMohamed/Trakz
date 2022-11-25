@@ -1,0 +1,61 @@
+<div class="flex flex-col gap-2 w-full">
+  <div class="bg-inherit !flex border-gray-300 rounded border !flex-col">
+    <app-opened-task [task]="task"></app-opened-task>
+    <div class="py-2 w-full">
+      <ng-container *ngFor="let step of task.steps; let i = index">
+        <app-task-step [step]="step"></app-task-step>
+        <div *ngIf="i < task.steps.length" class="!px-5 w-full">
+          <mat-divider class="opacity-30"></mat-divider>
+        </div>
+      </ng-container>
+      <app-add-step-input></app-add-step-input>
+    </div>
+  </div>
+
+  <div
+    *ngIf="task"
+    class="bg-inherit !flex border-gray-300 rounded border !flex-col"
+  >
+    <app-task-detail
+      *ngIf="task && task.dueDate"
+      [iconClasses]="task.isInMyDay ? 'text-cyan-700' : ''"
+      [textClasses]="task.isInMyDay ? 'text-cyan-700' : 'text-gray-400'"
+      iconName="sunny"
+      text="{{ task.isInMyDay ? 'Added to My Day' : 'Add to My Day' }}"
+    >
+    </app-task-detail>
+  </div>
+
+  <div
+    *ngIf="task.dueDate"
+    class="bg-inherit !flex border-gray-300 rounded border !flex-col"
+  >
+    <app-task-detail
+      [iconClasses]="
+        isDueDatePassed(task.dueDate) ? 'text-red-600' : 'text-cyan-600'
+      "
+      [textClasses]="
+        isDueDatePassed(task.dueDate) ? 'text-red-600' : 'text-cyan-600'
+      "
+      iconName="home"
+      text="Due {{ task.dueDate | date: 'EEE, MMM d' }}"
+    >
+    </app-task-detail>
+    <mat-divider class="opacity-30"></mat-divider>
+    <app-task-detail
+      [text]="getTaskRecurrence(task.recurrence)"
+      iconClasses="text-cyan-700"
+      iconName="home"
+      textClasses="text-cyan-700"
+    >
+    </app-task-detail>
+  </div>
+
+  <app-task-note [task]="task"></app-task-note>
+
+  <div
+    class="absolute bottom-0 left-0 right-0 py-1 bg-gray-300 bg-opacity-10 border-t border-t-gray-300 text-gray-600"
+  >
+    <app-delete-task [task]="task"></app-delete-task>
+  </div>
+</div>

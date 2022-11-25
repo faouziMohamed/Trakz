@@ -1,0 +1,22 @@
+<div *ngIf="task" class="flex items-start justify-between">
+  <div class="!flex gap-2 items-start">
+    <mat-icon
+      (mouseout)="handleCompletedIconMouseLeave()"
+      (mouseover)="handleCompletedIconMouseEnter()"
+      class="basis-auto text-[1.4rem] shrink-0 flex items-center"
+    >
+      {{ showCompletedIcon(task) }}
+    </mat-icon>
+    <p
+      [ngClass]="{textClassName, 'line-through':task.isCompleted}"
+      class="text-[0.8rem] font-[Ubuntu]"
+    >
+      {{ task.text }}
+    </p>
+  </div>
+  <button class="basis-auto shrink-0 !-mt-3" mat-icon-button>
+    <mat-icon class="!text-[1.2rem]">
+      {{ task.isImportant ? 'star' : 'star_border' }}
+    </mat-icon>
+  </button>
+</div>
