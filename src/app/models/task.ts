@@ -1,12 +1,12 @@
 export interface ICustomRecurrence {
   every: number;
-  unit: 'day' | 'week' | 'month' | 'year';
+  unit: 'day' | 'days' | 'week' | 'month' | 'year';
 }
 
 export interface ITaskStep {
   id: number;
   text: string;
-  completed: boolean;
+  isCompleted: boolean;
 }
 
 export type TRecurrence =
@@ -21,12 +21,16 @@ export type TRecurrence =
 export interface ITask {
   id: number;
   parent: string;
-  dueDate: Date;
+  dueDate?: Date;
   text: string;
   isInMyDay: boolean;
   isImportant: boolean;
   isCompleted: boolean;
   steps: ITaskStep[];
   recurrence: TRecurrence;
-  note: string | '';
+  createdAt: Date;
+  note: {
+    text: string | '';
+    lastEdited: Date | null;
+  };
 }

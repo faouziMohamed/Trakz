@@ -23,6 +23,12 @@ import { LeftSideNavComponent } from './layouts/main-layout/left-side-nav/left-s
 import { TopNavbarComponent } from './layouts/main-layout/top-navbar/top-navbar.component';
 import { RightSideNavComponent } from './layouts/main-layout/right-side-nav/right-side-nav.component';
 import { TaskTextCardComponent } from './pages/my-day/task-row/task-text-card/task-text-card.component';
+import { AddStepInputComponent } from './layouts/main-layout/right-side-nav/add-step-input/add-step-input.component';
+import { TaskStepComponent } from './layouts/main-layout/right-side-nav/task-step/task-step.component';
+import { OpenedTaskComponent } from '@/layouts/main-layout/right-side-nav/oppened-task/opened-task.component';
+import { TaskDetailComponent } from './layouts/main-layout/right-side-nav/task-detail/task-detail.component';
+import { TaskNoteComponent } from './layouts/main-layout/right-side-nav/task-note/task-note.component';
+import { DeleteTaskComponent } from './layouts/main-layout/right-side-nav/delete-task/delete-task.component';
 
 @NgModule({
   declarations: [
@@ -45,6 +51,12 @@ import { TaskTextCardComponent } from './pages/my-day/task-row/task-text-card/ta
     TopNavbarComponent,
     RightSideNavComponent,
     TaskTextCardComponent,
+    AddStepInputComponent,
+    TaskStepComponent,
+    OpenedTaskComponent,
+    TaskDetailComponent,
+    TaskNoteComponent,
+    DeleteTaskComponent,
   ],
   imports: [
     BrowserModule,

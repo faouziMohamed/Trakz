@@ -1,0 +1,64 @@
+<mat-toolbar
+  class="flex justify-between shrink-0 basis-auto items-center bg-gray-200 bg-opacity-1"
+>
+  <div class="flex items-center">
+    <button
+      (click)="drawer?.toggle()"
+      *ngIf="(isHandset$ | async) || !drawer?.opened"
+      aria-label="Toggle sidenav"
+      mat-icon-button
+      type="button"
+    >
+      <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+    </button>
+    <div class="flex leading-3 text-sm gap-1 relative flex-col p-0 m-0">
+      {{ activePage.title }}
+      <small
+        *ngIf="isMyDay(activePage.title)"
+        class="absolute text-[0.55rem] top-full"
+      >
+        {{ currentDate | date: 'EEEE, MMMM d' }}
+      </small>
+    </div>
+  </div>
+  <button
+    [matMenuTriggerFor]="notificationMenu"
+    aria-label="Notifications"
+    mat-icon-button
+  >
+    <mat-icon
+      [matBadgeHidden]="!notifications.length"
+      [matBadgeOverlap]="true"
+      [matBadge]="notifications.length"
+      matBadgeColor="warn"
+      matBadgeSize="small"
+      >notifications
+    </mat-icon>
+  </button>
+  <mat-menu #notificationMenu="matMenu" class="gap-2">
+    <button
+      (click)="onNotificationClick(notification)"
+      *ngFor="let notification of notifications"
+      class="!flex relative !py-1 w-full items-center !leading-normal !h-auto justify-between"
+      mat-menu-item
+    >
+      <div class="flex flex-col truncate">
+        <h4 class="!m-0 !font-[500] !text-[0.78rem]">
+          {{ notification.title }}
+        </h4>
+        <span class="w-full text-gray-500 truncate italic text-[0.70rem]">
+          {{ notification.message }}
+        </span>
+      </div>
+      <div>
+        <mat-icon
+          *ngIf="!notification.read"
+          aria-hidden="true"
+          class="text-sm {{ notification.type }}  !w-[0.875rem] !mr-0"
+        >
+          fiber_manual_record
+        </mat-icon>
+      </div>
+    </button>
+  </mat-menu>
+</mat-toolbar>

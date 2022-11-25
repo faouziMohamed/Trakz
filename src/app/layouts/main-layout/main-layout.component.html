@@ -32,7 +32,7 @@
     [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
     [mode]="(isHandset$ | async) ? 'over' : 'side'"
     [opened]="(isHandset$ | async) === false"
-    class="w-[12.5rem] !px-2 border-0 bg-gray-200 bg-inherit"
+    class="w-[12.5rem] relative !pt-6 px-2 border-0 bg-gray-200 bg-inherit"
     position="end"
   >
     <app-right-side-nav></app-right-side-nav>
