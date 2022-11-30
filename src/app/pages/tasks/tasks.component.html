@@ -1,1 +1,8 @@
-<p>tasks works!</p>
+<div
+  [ngClass]="{ 'justify-center items-center': !tasks.length }"
+  class="flex flex-col"
+>
+  <div class="flex flex-col w-full gap-2 p-3">
+    <app-task-row *ngFor="let task of tasks" [task]="task"></app-task-row>
+  </div>
+</div>

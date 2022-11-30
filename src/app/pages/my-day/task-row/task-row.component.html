@@ -1,46 +1,70 @@
 <div
-  (click)="setSelectedTask(task)"
+  (click)="onClickOnTaskRow($event, task)"
   *ngIf="task"
-  class="select-none cursor-pointer hover:bg-gray-200 active:scale-[1.01] active:bg-gray-100 focus-within:bg-gray-100 bg-gray-300 rounded px-4 py-2"
+  [id]="taskGeneratedId(task)"
+  class="select-none cursor-pointer hover:bg-cyan-100 active:scale-[1.01] active:bg-gray-100 focus-within:bg-gray-100 bg-gray-200 rounded px-4 py-2"
+  tabindex="0"
 >
-  <app-task-text-card [task]="task"></app-task-text-card>
+  <app-task-text-card
+    (toggleTaskIsCompleted)="onToggleTaskIsCompleted($event)"
+    (toggleTaskIsImportant)="onToggleTaskIsImportant($event)"
+    [task]="task"
+  ></app-task-text-card>
   <div
-    class="flex items-center text-gray-600 font-[Ubuntu] text-[0.68rem] gap-1"
+    class="flex items-center text-gray-600 font-[Ubuntu] text-[0.68rem] gap-1 pointer-events-none select-none"
   >
     <div *ngIf="task.isInMyDay" class="flex items-center gap-1">
-      <mat-icon class="text-[1.2rem]"> light_mode </mat-icon>
+      <mat-icon class="text-[1.1rem] !h-[1.1rem] !w-[1.1rem]">
+        light_mode
+      </mat-icon>
       <span>My Day</span>
       <span class="text-gray-700">•</span>
     </div>
 
     <div class="flex items-center gap-1">
       <span> {{ task.parent }} </span>
-      <span class="text-gray-700">•</span>
+      <span *ngIf="task.steps.length || task.dueDate" class="text-gray-700">
+        •
+      </span>
     </div>
 
     <div *ngIf="task.steps.length" class="flex items-center gap-1">
       <span>
-        {{ countCompletedTasks(task.steps) }} of
+        {{ countCompletedSteps(task.steps) }} of
         {{ task.steps.length }}
       </span>
-      <span class="text-gray-700">•</span>
+      <span *ngIf="task.dueDate" class="text-gray-700">•</span>
     </div>
 
-    <div *ngIf="task.dueDate" class="flex items-center gap-1">
-      <span [ngClass]="{ 'text-red-500': isPassedDueDate(task.dueDate) }">
-        {{ task.dueDate | date: 'EEE, MMM d' }}
+    <div *ngIf="task.dueDate" class="flex items-center text-gray-700 gap-0.5">
+      <mat-icon
+        [ngClass]="{
+          '!text-blue-700': !task.isCompleted && isToday(task.dueDate),
+          'text-red-700': !task.isCompleted && isOverdue(task.dueDate)
+        }"
+        class="text-[1rem] !h-[1rem] !w-[1rem]"
+      >
+        calendar_month
+      </mat-icon>
+      <span
+        [ngClass]="{
+          '!text-blue-700': !task.isCompleted && isToday(task.dueDate),
+          'text-red-700': !task.isCompleted && isOverdue(task.dueDate)
+        }"
+      >
+        {{ formatDate(task.dueDate) }}
       </span>
     </div>
 
     <div
-      *ngIf="task.recurrence !== 'once'"
+      *ngIf="task.dueDate && task.recurrence !== 'once'"
       class="flex items-center w-[0.89rem]"
     >
       <mat-icon class="flex items-center !h-[0.88rem] text-[0.89rem]">
         cached
       </mat-icon>
     </div>
-    <div *ngIf="task.note" class="flex w-[0.89rem] items-center">
+    <div *ngIf="task.note.text" class="flex w-[0.89rem] items-center">
       <mat-icon class="flex items-center !h-[0.88rem] text-[0.89rem]">
         sticky_note_2
       </mat-icon>

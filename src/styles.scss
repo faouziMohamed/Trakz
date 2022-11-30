@@ -22,3 +22,9 @@ body {
 .children-center {
   @apply flex justify-center items-center;
 }
+
+@layer base {
+  .bg-overlay {
+    @apply bg-black bg-opacity-30 absolute  inset-0 -z-10;
+  }
+}

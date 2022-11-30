@@ -1,5 +1,5 @@
 <mat-toolbar
-  class="flex justify-between shrink-0 basis-auto items-center bg-gray-200 bg-opacity-1"
+  class="flex justify-between shrink-0 basis-auto items-center flex bg-gray-50 !bg-opacity-10"
 >
   <div class="flex items-center">
     <button
@@ -17,7 +17,7 @@
         *ngIf="isMyDay(activePage.title)"
         class="absolute text-[0.55rem] top-full"
       >
-        {{ currentDate | date: 'EEEE, MMMM d' }}
+        {{ currentDate | date : 'EEEE, MMMM d' }}
       </small>
     </div>
   </div>

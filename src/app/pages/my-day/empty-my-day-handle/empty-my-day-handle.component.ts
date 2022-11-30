@@ -6,7 +6,5 @@ import { Component, Input } from '@angular/core';
   styleUrls: ['./empty-my-day-handle.component.scss'],
 })
 export class EmptyMyDayHandleComponent {
-  @Input() show: boolean = false;
-
-  constructor() {}
+  @Input() show = false;
 }

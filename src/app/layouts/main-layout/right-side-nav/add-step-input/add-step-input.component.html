@@ -6,14 +6,16 @@
   >
     <mat-icon
       #inputIcon
-      class="basis-auto pointer-events-none select-none shrink-0 !text-[0.98rem] !w-[0.98rem] !h-[0.98rem] flex items-center"
+      class="basis-auto pointer-events-none select-none shrink-0 !text-[0.98rem] !w-[0.98rem] !h-[0.99rem] flex items-center"
     >
       {{ inputHasFocus ? 'radio_button_unchecked' : 'add' }}
     </mat-icon>
     <input
       #taskInput
-      (blur)="handleInputBlur(taskInput)"
-      (focus)="handleInputFocus(taskInput)"
+      (blur)="onInputBlur(taskInput)"
+      (focus)="onInputFocus(taskInput)"
+      (keydown.enter)="emitAddStep(taskInput)"
+      (keydown.escape)="onInputBlur(taskInput)"
       class="placeholder-sky-700 focus-visible:outline-none w-full rounded py-1 bg-transparent px-1 !text-[0.8rem]"
       placeholder="Next step"
       type="text"

@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ITask } from '@models/task';
 
 @Component({
@@ -8,18 +8,23 @@ import { ITask } from '@models/task';
 })
 export class TaskTextCardComponent {
   @Input() task: ITask | undefined;
+
   @Input() textClassName: string | undefined = '';
-  hasMouseOver: boolean = false;
-  hasMouseOut: boolean = false;
 
-  constructor() {}
+  @Output() toggleTaskIsCompleted = new EventEmitter<ITask>();
 
-  handleCompletedIconMouseEnter() {
+  @Output() toggleTaskIsImportant = new EventEmitter<ITask>();
+
+  hasMouseOver = false;
+
+  hasMouseOut = false;
+
+  onMouseEnterCompletedIcon() {
     this.hasMouseOver = true;
     this.hasMouseOut = false;
   }
 
-  handleCompletedIconMouseLeave() {
+  onMouseLeaveCompletedIcon() {
     this.hasMouseOver = false;
     this.hasMouseOut = true;
   }
@@ -35,5 +40,13 @@ export class TaskTextCardComponent {
       return 'radio_button_unchecked';
     }
     return 'radio_button_unchecked';
+  }
+
+  onClickCompleteButton(task: ITask) {
+    this.toggleTaskIsCompleted.emit(task);
+  }
+
+  onClickImportantButton(task: ITask) {
+    this.toggleTaskIsImportant.emit(task);
   }
 }

@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { PageTitles } from '@models/navLabel';
 import { ITask } from '@models/task';
-import { TaskDataService } from '@/services/tasks/task-data.service';
+
+import { TaskService } from '@/services/tasks/task.service';
 
 @Component({
   selector: 'app-my-day',
@@ -9,10 +11,11 @@ import { TaskDataService } from '@/services/tasks/task-data.service';
 })
 export class MyDayComponent implements OnInit {
   tasks: ITask[] = [];
-  constructor(private tasksData: TaskDataService) {}
+
+  constructor(private tasksData: TaskService) {}
 
   ngOnInit(): void {
-    this.tasksData.getTasks().subscribe((tasks) => {
+    this.tasksData.getTaskByFolder(PageTitles.MyDay).subscribe((tasks) => {
       this.tasks = tasks;
     });
   }

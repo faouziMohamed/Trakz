@@ -1,8 +1,13 @@
 <div *ngIf="task" class="flex justify-between items-center">
   <p class="!m-0 text-[0.78rem] text-center w-full">
-    Created on {{ task.createdAt | date: 'EEE, MMM d' }}
+    Created on {{ task.createdAt | date : 'EEE, MMM d' }}
   </p>
-  <button mat-icon-button>
-    <mat-icon>delete_outline</mat-icon>
+  <button
+    (click)="onClickDeleteButton(task)"
+    class="active:scale-110"
+    color="warn"
+    mat-icon-button
+  >
+    <mat-icon>delete</mat-icon>
   </button>
 </div>

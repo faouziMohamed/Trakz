@@ -1,44 +1,39 @@
-import { Component, Input } from '@angular/core';
-import { Observable } from 'rxjs';
 import { BreakpointObserver } from '@angular/cdk/layout';
-import { IUser } from '@models/User';
+import { Component, Input } from '@angular/core';
 import { MatSidenav } from '@angular/material/sidenav';
+import { PageTitles } from '@models/navLabel';
+import { IUser } from '@models/User';
+import { Observable } from 'rxjs';
 
-enum defaultNavLabels {
-  MyDay = 'My Day',
-  Important = 'Important',
-  Planned = 'Planned',
-  Tasks = 'Tasks',
-  Projects = 'Projects',
-}
+import { TaskService } from '@/services/tasks/task.service';
 
 const NAV_LINKS = [
   {
-    label: defaultNavLabels.MyDay,
+    label: PageTitles.MyDay,
     link: '/my-day',
     icon: 'wb_sunny',
     count: 12,
   },
   {
-    label: defaultNavLabels.Important,
+    label: PageTitles.Important,
     link: '/important',
     icon: 'star',
     count: 3,
   },
   {
-    label: defaultNavLabels.Planned,
+    label: PageTitles.Planned,
     link: '/planned',
     icon: 'calendar_month',
     count: 0,
   },
   {
-    label: defaultNavLabels.Tasks,
+    label: PageTitles.Tasks,
     link: '/tasks',
     icon: 'checklist',
     count: 145,
   },
   {
-    label: defaultNavLabels.Projects,
+    label: PageTitles.Projects,
     link: '/projects',
     icon: 'folder',
     count: 1,
@@ -51,9 +46,17 @@ const NAV_LINKS = [
 })
 export class LeftSideNavComponent {
   @Input() isHandset$: Observable<boolean> | undefined;
+
   navLinks = NAV_LINKS;
+
   @Input() user: IUser | undefined;
+
   @Input() drawer: MatSidenav | undefined;
+
   @Input() activePage: { title: string } | undefined;
-  constructor(private _breakpointObserver: BreakpointObserver) {}
+
+  constructor(
+    private _breakpointObserver: BreakpointObserver,
+    private _tasksService: TaskService,
+  ) {}
 }

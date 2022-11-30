@@ -1,3 +1,4 @@
+/* eslint-disable class-methods-use-this */
 import { Injectable } from '@angular/core';
 import { INotification } from '@models/notifications';
 
@@ -36,8 +37,6 @@ const NOTIFICATIONS: INotification[] = [
   providedIn: 'root',
 })
 export class NotificationsService {
-  constructor() {}
-
   getNotifications() {
     return NOTIFICATIONS;
   }

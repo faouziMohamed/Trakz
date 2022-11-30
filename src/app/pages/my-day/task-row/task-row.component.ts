@@ -1,6 +1,13 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+/* eslint-disable class-methods-use-this */
+import { Component, Input, OnInit } from '@angular/core';
 import { ITask, ITaskStep } from '@models/task';
-import { TaskDataService } from '@/services/tasks/task-data.service';
+
+import { TaskService } from '@/services/tasks/task.service';
+import {
+  chooseDateToDisplay,
+  isOverdue as isDateOverdue,
+  isToday as isDateToday,
+} from '@/utils/trakzUtils';
 
 @Component({
   selector: 'app-task-row',
@@ -10,26 +17,38 @@ import { TaskDataService } from '@/services/tasks/task-data.service';
 export class TaskRowComponent implements OnInit {
   @Input() task: ITask | undefined;
 
-  @Output() selected = new EventEmitter<ITask>();
+  constructor(private _tasksService: TaskService) {}
 
-  constructor(private _tasksService: TaskDataService) {}
-
-  ngOnInit(): void {
-    this.task = this.task || ({} as ITask);
-  }
-  setSelectedTask(task: ITask) {
-    this._tasksService.setSelection(task);
-  }
-
-  isPassedDueDate(dueDate: Date) {
-    return dueDate < new Date();
-  }
-
-  countCompletedTasks(steps: ITaskStep[]) {
+  // eslint-disable-next-line class-methods-use-this
+  countCompletedSteps(steps: ITaskStep[]) {
     return steps.filter((step) => step.isCompleted).length;
   }
 
-  onTaskClick() {
-    this.selected.emit(this.task);
+  ngOnInit(): void {
+    this.task = this.task ?? ({} as ITask);
   }
+
+  isOverdue = (dueDate: Date) => isDateOverdue(dueDate);
+
+  isToday = (dueDate: Date) => isDateToday(dueDate);
+
+  onClickOnTaskRow($event: MouseEvent, task: ITask) {
+    const target = $event.target as HTMLElement;
+    if (target.tagName === 'BUTTON' || target.tagName === 'MAT-ICON') {
+      return;
+    }
+    this._tasksService.setSelection(task);
+  }
+
+  onToggleTaskIsCompleted(task: ITask) {
+    this._tasksService.toggleTaskIsCompleted(task);
+  }
+
+  onToggleTaskIsImportant(task: ITask) {
+    this._tasksService.toggleTaskIsImportant(task);
+  }
+
+  taskGeneratedId = (task: ITask) => TaskService.taskGeneratedId(task);
+
+  formatDate = (dueDate: Date) => chooseDateToDisplay(dueDate);
 }

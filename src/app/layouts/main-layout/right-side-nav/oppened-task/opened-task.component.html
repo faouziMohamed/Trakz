@@ -4,12 +4,14 @@
     class="flex grow items-start rounded py-1 px-1 text-gray-800"
   >
     <mat-icon
-      class="basis-auto shrink-0 pt-[0.15rem] z-10 !text-[1.5rem] !w-[1.5rem] !h-auto flex items-center"
+      (click)="emitToggleTaskIsComplete()"
+      class="basis-auto shrink-0 pt-[0.15rem] z-10 !text-[1.3rem] !w-[1.3rem] !h-auto flex items-center"
     >
       {{ task.isCompleted ? 'check_circle' : 'check_circle_outline' }}
     </mat-icon>
     <div
       #editTask
+      [ngClass]="{ 'line-through': task.isCompleted }"
       class="focus-visible:outline-none w-full rounded bg-transparent px-1 text-[0.9rem] !font-[500] !font-[Inter]"
       contenteditable
       tabindex="0"
@@ -17,7 +19,11 @@
       {{ task.text }}
     </div>
   </div>
-  <button class="basis-auto shrink-0" mat-icon-button>
+  <button
+    (click)="emitToggleTaskIsImportant()"
+    class="basis-auto shrink-0"
+    mat-icon-button
+  >
     <mat-icon class="!text-[1rem]">
       {{ task.isImportant ? 'star' : 'star_border' }}
     </mat-icon>

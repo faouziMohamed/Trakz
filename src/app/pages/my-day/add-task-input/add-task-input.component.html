@@ -1,18 +1,16 @@
-<div class="overflow-auto absolute px-4 py-4 bottom-0 w-full">
+<div class="z-100 shrink-0 basis-auto bg-opacity-100 px-4 py-4 bottom-0 w-full">
   <div
     (click)="taskInput.focus()"
     class="flex items-center rounded p-2 bg-gray-300 focus-within:bg-gray-100 hover:bg-gray-100 focus-within:outline outline-2 outline-offset-2"
   >
-    <mat-icon
-      #inputIcon
-      class="basis-auto pointer-events-none shrink-0 flex items-center"
-    >
+    <mat-icon class="basis-auto pointer-events-none shrink-0 flex items-center">
       {{ inputHasFocus ? 'radio_button_checked' : 'add' }}
     </mat-icon>
     <input
       #taskInput
-      (blur)="handleInputBlur(taskInput)"
-      (focus)="handleInputFocus(taskInput)"
+      (blur)="onBlurInput(taskInput)"
+      (focus)="onFocusInput(taskInput)"
+      (keyup.enter)="onEnterInput(taskInput)"
       class="placeholder-gray-800 text-gray-600 focus-visible:outline-none w-full rounded py-1 bg-transparent px-2"
       placeholder="Add a task"
       type="text"

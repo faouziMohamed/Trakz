@@ -1,12 +1,13 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { MyDayComponent } from '@/pages/my-day/my-day.component';
+
+import { HomeComponent } from '@/pages/home/home.component';
 import { ImportantComponent } from '@/pages/important/important.component';
-import { TasksComponent } from '@/pages/tasks/tasks.component';
+import { MyDayComponent } from '@/pages/my-day/my-day.component';
+import { NotFoundComponent } from '@/pages/not-found/not-found.component';
 import { PlannedComponent } from '@/pages/planned/planned.component';
 import { ProjectsComponent } from '@/pages/projects/projects.component';
-import { HomeComponent } from '@/pages/home/home.component';
-import { NotFoundComponent } from '@/pages/not-found/not-found.component';
+import { TasksComponent } from '@/pages/tasks/tasks.component';
 
 const routes: Routes = [
   {

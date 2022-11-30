@@ -1,40 +1,54 @@
-<mat-sidenav-container class="h-full">
-  <mat-sidenav
-    #drawer
-    [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
-    [mode]="(isHandset$ | async) ? 'over' : 'side'"
-    [opened]="(isHandset$ | async) === false"
-    class="w-[12.5rem] !px-2 border-0 bg-inherit"
-    fixedInViewport
-  >
-    <app-left-side-nav
-      [activePage]="activePage"
-      [drawer]="drawer"
-      [isHandset$]="isHandset$"
-      [user]="user"
+<div class="flex justify-center absolute inset-0">
+  <mat-sidenav-container class="h-full w-full max-w-screen-2xl">
+    <mat-sidenav
+      #drawer
+      [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
+      [mode]="(isHandset$ | async) ? 'over' : 'side'"
+      [opened]="(isHandset$ | async) === false"
+      class="w-[12.5rem] !px-2 border-0 bg-inherit"
+      fixedInViewport
     >
-    </app-left-side-nav>
-  </mat-sidenav>
-  <mat-sidenav-content
-    class="relative !flex flex-col rounded-tl-2xl !overflow-hidden bg-gray-100"
-  >
-    <app-top-navbar
-      [activePage]="activePage"
-      [drawer]="drawer"
-      [isHandset$]="isHandset$"
+      <app-left-side-nav
+        [activePage]="activePage"
+        [drawer]="drawer"
+        [isHandset$]="isHandset$"
+        [user]="user"
+      >
+      </app-left-side-nav>
+    </mat-sidenav>
+    <mat-sidenav-content
+      [ngClass]="bgImage && bgImage"
+      class="relative bg-cover bg-no-repeat bg-center !flex h-full flex-col rounded-tl-2xl !overflow-hidden bg-slate-300"
     >
-    </app-top-navbar>
-    <div class="relative flex basis-full grow flex-col">
-      <ng-content></ng-content>
-    </div>
-  </mat-sidenav-content>
-  <mat-sidenav
-    [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
-    [mode]="(isHandset$ | async) ? 'over' : 'side'"
-    [opened]="(isHandset$ | async) === false"
-    class="w-[12.5rem] relative !pt-6 px-2 border-0 bg-gray-200 bg-inherit"
-    position="end"
-  >
-    <app-right-side-nav></app-right-side-nav>
-  </mat-sidenav>
-</mat-sidenav-container>
+      <div class="bg-overlay"></div>
+      <app-top-navbar
+        [activePage]="activePage"
+        [drawer]="drawer"
+        [isHandset$]="isHandset$"
+      >
+      </app-top-navbar>
+      <div
+        class="relative h-full flex overflow-hidden basis-full justify-between flex-col"
+      >
+        <div class="overflow-y-auto grow basis-full">
+          <ng-content></ng-content>
+        </div>
+        <app-add-task-input></app-add-task-input>
+      </div>
+    </mat-sidenav-content>
+    <mat-sidenav
+      (closedStart)="handleCloseRightSideNav()"
+      [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
+      [mode]="
+        (isHandset$ | async) || ((isSmallScreen | async) && openRightSideNav)
+          ? 'over'
+          : 'side'
+      "
+      [opened]="openRightSideNav"
+      class="w-[90%] xs:w-[20rem] relative !overflow-hidden !border-none bg-gray-200 bg-inherit"
+      position="end"
+    >
+      <app-right-side-nav></app-right-side-nav>
+    </mat-sidenav>
+  </mat-sidenav-container>
+</div>

@@ -1,18 +1,20 @@
-import { Component, OnInit } from '@angular/core';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-import { Observable } from 'rxjs';
-import { map, shareReplay } from 'rxjs/operators';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { NavigationEnd, Router } from '@angular/router';
+import { PageTitles } from '@models/navLabel';
 import { IUser } from '@models/User';
-import { defaultNavLabels } from '@models/navLabel';
+import { Observable, Subscription } from 'rxjs';
+import { map, shareReplay } from 'rxjs/operators';
+
+import { TaskService } from '@/services/tasks/task.service';
+import { slugToTitle } from '@/utils/trakzUtils';
 
 @Component({
   selector: 'app-main-layout',
   templateUrl: './main-layout.component.html',
   styleUrls: ['./main-layout.component.scss'],
 })
-export class MainLayoutComponent implements OnInit {
+export class MainLayoutComponent implements OnInit, OnDestroy {
   isHandset$: Observable<boolean> = this._breakpointObserver
     .observe(Breakpoints.XSmall)
     .pipe(
@@ -20,45 +22,86 @@ export class MainLayoutComponent implements OnInit {
       shareReplay(),
     );
 
-  activePage: { title: string | defaultNavLabels } = {
-    title: defaultNavLabels.MyDay,
+  isSmallScreen: Observable<boolean> = this._breakpointObserver
+    .observe('(min-width: 600px) and (max-width: 800px)')
+    .pipe(
+      map((result) => result.matches),
+      shareReplay(),
+    );
+
+  activePage: { title: string | PageTitles } = {
+    title: PageTitles.MyDay,
   };
+
   currentDate: Date | undefined;
+
   user: IUser = {
     name: 'Shiba Inu',
     email: 'shiba@mail.com',
     picture: 'https://material.angular.io/assets/img/examples/shiba1.jpg',
   };
 
+  openRightSideNav = false;
+
+  bgImage = 'bg-dune';
+
+  private _routerObserver: Subscription | undefined;
+
   constructor(
     private _breakpointObserver: BreakpointObserver,
-    private _snackBar: MatSnackBar,
     private _router: Router,
-    private _route: ActivatedRoute,
+    private _taskDataService: TaskService,
   ) {}
 
-  onActivePageChange(page: defaultNavLabels | string) {
+  onActivePageChange(page: PageTitles | string) {
     this.activePage.title = page;
-    document.title = page + ' | Trakz';
+    document.title = `${page} | Trakz`;
+    // 'night-bab'
+    //   'night-dusk'
+    //   'night-beach'
+    //   'mountain-beach'
+    //   dune
+    //   street
+    switch (page) {
+      case PageTitles.MyDay: {
+        this.bgImage = 'bg-dune';
+        break;
+      }
+      case PageTitles.Tasks: {
+        this.bgImage = 'bg-street';
+        break;
+      }
+      case PageTitles.Projects: {
+        this.bgImage = 'bg-mountain-beach';
+        break;
+      }
+      default:
+        this.bgImage = 'bg-night-bab';
+    }
   }
 
   ngOnInit(): void {
     this.currentDate = new Date();
-    // get the current page route first page segment
-    this._router.events.subscribe((event) => {
-      if (event instanceof NavigationEnd) {
-        const page = event.url.split('/')[1];
-        this.onActivePageChange(this.slugToTitle(page));
+
+    this._taskDataService.getSelectedTask().subscribe((task) => {
+      this.openRightSideNav = !!task;
+    });
+
+    this._router.events.subscribe(($event) => {
+      if ($event instanceof NavigationEnd) {
+        const { url } = $event;
+        const page = url.split('/')[1];
+        this.onActivePageChange(slugToTitle(page));
       }
     });
   }
 
-  slugToTitle(str: string) {
-    // my-day => My Day // my_day => My Day // my day => My Day // myDay => MyDay
-    return str
-      .replace(/^\w|[A-Z]|\b\w/g, function (word) {
-        return word.toUpperCase();
-      })
-      .replace(/[- ]+/g, ' ');
+  handleCloseRightSideNav() {
+    this._taskDataService.setSelection(null);
+  }
+
+  ngOnDestroy(): void {
+    this._breakpointObserver.ngOnDestroy();
+    this._routerObserver?.unsubscribe();
   }
 }

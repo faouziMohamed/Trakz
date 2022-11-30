@@ -1,10 +1,9 @@
 <div
   [ngClass]="{ 'justify-center items-center': !tasks.length }"
-  class="absolute bg-blue-600 inset-0 flex flex-col"
+  class="flex flex-col"
 >
   <app-empty-my-day-handle [show]="!tasks.length"></app-empty-my-day-handle>
-  <div class="flex flex-col gap-2 p-3">
+  <div class="flex flex-col w-full gap-2 p-3">
     <app-task-row *ngFor="let task of tasks" [task]="task"></app-task-row>
   </div>
-  <app-add-task-input></app-add-task-input>
 </div>

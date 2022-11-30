@@ -1,0 +1,18 @@
+<h2 mat-dialog-title>{{ dialogTitle }}</h2>
+
+<mat-dialog-content>
+  <p>{{ dialogMessage }}</p>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+  <button
+    (click)="onConfirm()"
+    class="bg-red-500 text-gray-50 hover:text-white"
+    mat-button
+  >
+    {{ dialogAcceptAction }}
+  </button>
+  <button (click)="onCancel()" mat-stroked-button>
+    {{ dialogCancelAction }}
+  </button>
+</mat-dialog-actions>

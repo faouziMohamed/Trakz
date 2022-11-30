@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-empty-function,class-methods-use-this */
 import { Component, Input } from '@angular/core';
 
 @Component({
@@ -6,14 +7,15 @@ import { Component, Input } from '@angular/core';
   styleUrls: ['./task-detail.component.scss'],
 })
 export class TaskDetailComponent {
-  @Input() iconName: string = 'check';
-  @Input() textClasses: string = '';
-  @Input() iconClasses: string = '';
-  @Input() text: string = 'Task Detail';
+  @Input() iconName = 'check';
 
-  constructor() {}
+  @Input() textClasses = '';
 
-  @Input() onClose: () => void = () => {};
+  @Input() iconClasses = '';
 
-  @Input() onClick: () => void = () => {};
+  @Input() text = 'Task Detail';
+
+  @Input() onClose = () => {};
+
+  @Input() onClick = () => {};
 }

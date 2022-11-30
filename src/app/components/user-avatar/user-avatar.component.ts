@@ -11,6 +11,4 @@ export class UserAvatarComponent {
   @Input() picture: string | undefined;
 
   @Input() email: string | undefined;
-
-  constructor() {}
 }

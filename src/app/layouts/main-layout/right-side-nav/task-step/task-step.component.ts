@@ -1,6 +1,16 @@
-import { Component, Input, ViewChild } from '@angular/core';
-import { ITaskStep } from '@models/task';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  ViewChild,
+} from '@angular/core';
 import { MatMenuTrigger } from '@angular/material/menu';
+import { ITaskStep } from '@models/task';
+
+export interface IToggleComplete {
+  id: ITaskStep['id'];
+}
 
 @Component({
   selector: 'app-task-step',
@@ -8,9 +18,18 @@ import { MatMenuTrigger } from '@angular/material/menu';
   styleUrls: ['./task-step.component.scss'],
 })
 export class TaskStepComponent {
-  hasMouseOver: boolean = false;
-  hasMouseOut: boolean = false;
-  @Input() step: ITaskStep | undefined;
+  hasMouseOver = false;
+
+  hasMouseOut = false;
+
+  @Input() step!: ITaskStep;
+
+  @Output() removeStep = new EventEmitter<ITaskStep['id']>();
+
+  @Output() promoteStepToTask = new EventEmitter<ITaskStep['id']>();
+
+  @Output() toggleStepIsComplete = new EventEmitter<ITaskStep['id']>();
+
   @ViewChild(MatMenuTrigger)
   stepMenu: MatMenuTrigger | undefined;
 
@@ -31,24 +50,32 @@ export class TaskStepComponent {
     return 'radio_button_unchecked';
   }
 
-  handleCompletedIconMouseEnter() {
+  onMouseEnterCompletedIcon() {
     this.hasMouseOver = true;
     this.hasMouseOut = false;
   }
 
-  handleCompletedIconMouseLeave() {
+  onMouseLeaveCompletedIcon() {
     this.hasMouseOver = false;
     this.hasMouseOut = true;
   }
 
-  handleMarkAsComplete(step: ITaskStep) {}
+  emitToggleStepIsComplete(step: ITaskStep) {
+    this.toggleStepIsComplete.emit(step.id);
+  }
 
-  handlePromoteToTask(step: ITaskStep) {}
+  emitPromoteStepToTask(step: ITaskStep) {
+    this.promoteStepToTask.emit(step.id);
+  }
 
-  handleDeleteStep(step: ITaskStep) {}
+  emitRemoveStep(step: ITaskStep) {
+    this.removeStep.emit(step.id);
+  }
 
-  onRightClick($event: MouseEvent) {
+  onRightClickInTheStep($event: MouseEvent) {
     $event.preventDefault();
-    this.stepMenu?.openMenu();
+    if (this.stepMenu) {
+      this.stepMenu.openMenu();
+    }
   }
 }

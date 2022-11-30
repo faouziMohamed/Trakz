@@ -2,8 +2,12 @@ export interface ICustomRecurrence {
   every: number;
   unit: 'day' | 'days' | 'week' | 'month' | 'year';
 }
+export interface ITimeStampsDate {
+  createdAt: Date;
+  updatedAt: Date;
+}
 
-export interface ITaskStep {
+export interface ITaskStep extends ITimeStampsDate {
   id: number;
   text: string;
   isCompleted: boolean;
@@ -18,7 +22,13 @@ export type TRecurrence =
   | 'once'
   | ICustomRecurrence;
 
-export interface ITask {
+export interface ITaskNote {
+  text: string | '';
+  createdAt?: ITimeStampsDate['createdAt'];
+  updatedAt?: ITimeStampsDate['updatedAt'];
+}
+
+export interface ITask extends ITimeStampsDate {
   id: number;
   parent: string;
   dueDate?: Date;
@@ -28,9 +38,5 @@ export interface ITask {
   isCompleted: boolean;
   steps: ITaskStep[];
   recurrence: TRecurrence;
-  createdAt: Date;
-  note: {
-    text: string | '';
-    lastEdited: Date | null;
-  };
+  note: ITaskNote;
 }

@@ -1,14 +1,14 @@
 <div
-  *ngIf="task"
+  *ngIf="note"
   class="bg-inherit !flex border-gray-300 focus-within:border-gray-400 rounded border !flex-col"
 >
   <textarea
     class="w-full h-32 p-2 border-none resize-none focus-visible:outline-none rounded bg-inherit !text-[0.78rem] text-slate-600"
     placeholder="Add a note"
-    >{{ task.note.text }}</textarea
+    >{{ note.text }}</textarea
   >
   <mat-divider class="opacity-30"></mat-divider>
   <small class="text-gray-500 !text-[0.68rem] p-0.5 text-center">
-    Updated on {{ task.note.lastEdited | date: 'EEE, MMM d' }}
+    Updated on {{ note.updatedAt | date : 'EEE, MMM d' }}
   </small>
 </div>

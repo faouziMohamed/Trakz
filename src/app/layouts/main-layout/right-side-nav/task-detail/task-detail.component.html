@@ -1,5 +1,7 @@
 <div
-  class="flex pl-2 pt-1 bg-gray-300 bg-opacity-10 hover:bg-opacity-25 justify-between items-center"
+  (click)="onClick()"
+  class="cursor-pointer flex pl-2 pt-1 bg-gray-300 active:bg-opacity-100 focus-within:bg-opacity-90 bg-opacity-10 hover:bg-opacity-95 justify-between items-center"
+  tabindex="0"
 >
   <div class="flex gap-1">
     <mat-icon
@@ -17,6 +19,7 @@
     </p>
   </div>
   <button
+    (click)="onClose()"
     class="basis-auto !flex !text-center items-center self-center"
     mat-icon-button
   >
