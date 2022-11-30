@@ -11,7 +11,9 @@
       "@/modules/*": ["src/app/modules/*"],
       "@/pages/*": ["src/app/pages/*"],
       "@/services/*": ["src/app/services/*"],
-      "@types/*": ["src/environments/types/*"]
+      "@/types/*": ["src/environments/types/*"],
+      "@/configs/*": ["src/app/configs/*"],
+      "@/utils/*": ["src/app/utils/*"]
     },
     "outDir": "./dist/out-tsc",
     "forceConsistentCasingInFileNames": true,
