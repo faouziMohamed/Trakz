@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
 import { PageTitles } from '@models/navLabel';
 import { ITask, ITaskNote, ITaskStep, TRecurrence } from '@models/task';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';

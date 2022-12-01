@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign,class-methods-use-this */
 import { Component, Input, OnInit } from '@angular/core';
+import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
 import { MatSidenav } from '@angular/material/sidenav';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { PageTitles } from '@models/navLabel';
 import { Observable } from 'rxjs';
 
