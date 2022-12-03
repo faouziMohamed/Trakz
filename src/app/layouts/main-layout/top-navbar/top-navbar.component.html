@@ -1,5 +1,5 @@
 <mat-toolbar
-  class="flex justify-between shrink-0 basis-auto items-center flex bg-gray-50 !bg-opacity-10"
+  class="flex justify-between shrink-0 basis-auto items-center flex bg-gray-700 bg-opacity-40"
 >
   <div class="flex items-center">
     <button
@@ -11,54 +11,17 @@
     >
       <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
     </button>
-    <div class="flex leading-3 text-sm gap-1 relative flex-col p-0 m-0">
-      {{ activePage.title }}
+    <div class="flex text-gray-200 leading-3 gap-1 relative flex-col">
+      <h1 class="!text-2xl !font-bold !m-0">
+        {{ activePage }}
+      </h1>
       <small
-        *ngIf="isMyDay(activePage.title)"
-        class="absolute text-[0.55rem] top-full"
+        *ngIf="isMyDay(activePage)"
+        class="absolute text-xs top-[calc(100%_-_0.1rem)]"
       >
-        {{ currentDate | date : 'EEEE, MMMM d' }}
+        {{ currentDate }}
       </small>
     </div>
   </div>
-  <button
-    [matMenuTriggerFor]="notificationMenu"
-    aria-label="Notifications"
-    mat-icon-button
-  >
-    <mat-icon
-      [matBadgeHidden]="!notifications.length"
-      [matBadgeOverlap]="true"
-      [matBadge]="notifications.length"
-      matBadgeColor="warn"
-      matBadgeSize="small"
-      >notifications
-    </mat-icon>
-  </button>
-  <mat-menu #notificationMenu="matMenu" class="gap-2">
-    <button
-      (click)="onNotificationClick(notification)"
-      *ngFor="let notification of notifications"
-      class="!flex relative !py-1 w-full items-center !leading-normal !h-auto justify-between"
-      mat-menu-item
-    >
-      <div class="flex flex-col truncate">
-        <h4 class="!m-0 !font-[500] !text-[0.78rem]">
-          {{ notification.title }}
-        </h4>
-        <span class="w-full text-gray-500 truncate italic text-[0.70rem]">
-          {{ notification.message }}
-        </span>
-      </div>
-      <div>
-        <mat-icon
-          *ngIf="!notification.read"
-          aria-hidden="true"
-          class="text-sm {{ notification.type }}  !w-[0.875rem] !mr-0"
-        >
-          fiber_manual_record
-        </mat-icon>
-      </div>
-    </button>
-  </mat-menu>
+  <app-trakz-notification></app-trakz-notification>
 </mat-toolbar>

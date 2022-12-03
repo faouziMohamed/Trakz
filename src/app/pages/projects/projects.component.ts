@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { PageTitles } from '@models/navLabel';
-import { ITask } from '@models/task';
 
+import { PageTitles } from '@/models/navLabel';
+import { ITask } from '@/models/task';
 import { TaskService } from '@/services/tasks/task.service';
 
 @Component({

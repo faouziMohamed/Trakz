@@ -1,8 +1,14 @@
+import { CdkAccordionModule } from '@angular/cdk/accordion';
+import { LayoutModule } from '@angular/cdk/layout';
 import { DatePipe } from '@angular/common';
 import { NgModule } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatListModule } from '@angular/material/list';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatToolbarModule } from '@angular/material/toolbar';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { CloudinaryModule } from '@cloudinary/ng';
 
 import { EmptyCalendarComponent } from '@/components/svg/empty-calendar/empty-calendar.component';
 import { TrakzLogoComponent } from '@/components/svg/trakz-logo/trakz-logo.component';
@@ -34,6 +40,10 @@ import { PlannedComponent } from '@/pages/planned/planned.component';
 import { ProjectsComponent } from '@/pages/projects/projects.component';
 import { TasksComponent } from '@/pages/tasks/tasks.component';
 
+import { NavListItemComponent } from './layouts/main-layout/left-side-nav/nav-list-item/nav-list-item.component';
+import { TrakzNotificationComponent } from './layouts/main-layout/top-navbar/trakz-notification/trakz-notification.component';
+import { TaskGroupListComponent } from './pages/tasks/task-group-list/task-group-list.component';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -62,13 +72,22 @@ import { TasksComponent } from '@/pages/tasks/tasks.component';
     TaskNoteComponent,
     DeleteTaskComponent,
     ConfirmDeleteDialogComponent,
+    NavListItemComponent,
+    TrakzNotificationComponent,
+    TaskGroupListComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
     MaterialModule,
-    CloudinaryModule,
+    LayoutModule,
+    MatToolbarModule,
+    MatButtonModule,
+    MatSidenavModule,
+    MatIconModule,
+    MatListModule,
+    CdkAccordionModule,
   ],
   providers: [DatePipe],
   bootstrap: [AppComponent],

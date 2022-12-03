@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { ITask } from '@models/task';
+
+import { ITask } from '@/models/task';
 
 @Component({
   selector: 'app-task-text-card',

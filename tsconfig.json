@@ -7,7 +7,7 @@
       "@/app/*": ["src/app/*"],
       "@/components/*": ["src/app/components/*"],
       "@/layouts/*": ["src/app/layouts/*"],
-      "@models/*": ["src/app/models/*"],
+      "@/models/*": ["src/app/models/*"],
       "@/modules/*": ["src/app/modules/*"],
       "@/pages/*": ["src/app/pages/*"],
       "@/services/*": ["src/app/services/*"],
@@ -28,9 +28,9 @@
     "experimentalDecorators": true,
     "moduleResolution": "node",
     "importHelpers": true,
-    "target": "es2020",
-    "module": "es2020",
-    "lib": ["es2020", "dom"]
+    "target": "es2022",
+    "module": "es2022",
+    "lib": ["es2021.intl", "dom"]
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,

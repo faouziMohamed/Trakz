@@ -5,8 +5,9 @@ import {
   Output,
   ViewChild,
 } from '@angular/core';
-import { MatLegacyMenuTrigger as MatMenuTrigger } from '@angular/material/legacy-menu';
-import { ITaskStep } from '@models/task';
+import { MatMenuTrigger } from '@angular/material/menu';
+
+import { ITaskStep } from '@/models/task';
 
 export interface IToggleComplete {
   id: ITaskStep['id'];

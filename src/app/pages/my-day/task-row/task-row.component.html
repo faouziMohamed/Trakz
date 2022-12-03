@@ -2,7 +2,7 @@
   (click)="onClickOnTaskRow($event, task)"
   *ngIf="task"
   [id]="taskGeneratedId(task)"
-  class="select-none cursor-pointer hover:bg-cyan-100 active:scale-[1.01] active:bg-gray-100 focus-within:bg-gray-100 bg-gray-200 rounded px-4 py-2"
+  class="select-none cursor-pointer hover:bg-cyan-100 active:scale-[1.01] active:bg-gray-100 focus-within:bg-gray-100 bg-gray-200 rounded px-4 py-2 overflow-hidden"
   tabindex="0"
 >
   <app-task-text-card
@@ -11,7 +11,7 @@
     [task]="task"
   ></app-task-text-card>
   <div
-    class="flex items-center text-gray-600 font-[Ubuntu] text-[0.68rem] gap-1 pointer-events-none select-none"
+    class="flex items-center text-gray-600 font-[Ubuntu] text-[0.68rem] gap-1 pointer-events-none select-none flex-wrap"
   >
     <div *ngIf="task.isInMyDay" class="flex items-center gap-1">
       <mat-icon class="text-[1.1rem] !h-[1.1rem] !w-[1.1rem]">

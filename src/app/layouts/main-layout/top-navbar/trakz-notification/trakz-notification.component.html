@@ -1,0 +1,41 @@
+<button
+  [matMenuTriggerFor]="notificationMenu"
+  aria-label="Notifications"
+  mat-icon-button
+>
+  <mat-icon
+    [matBadgeHidden]="!notifications.length"
+    [matBadgeOverlap]="true"
+    [matBadge]="notifications.length"
+    class="text-gray-200"
+    matBadgeColor="warn"
+    matBadgeSize="small"
+    >notifications
+  </mat-icon>
+</button>
+<mat-menu #notificationMenu="matMenu" class="gap-2">
+  <button
+    (click)="onNotificationClick(notification)"
+    *ngFor="let notification of notifications"
+    class="!flex relative !py-1 w-full items-center !leading-normal !h-auto justify-between"
+    mat-menu-item
+  >
+    <div class="flex flex-col truncate">
+      <h4 class="!m-0 !font-[500] !text-[0.78rem]">
+        {{ notification.title }}
+      </h4>
+      <span class="w-full text-gray-500 truncate italic text-[0.70rem]">
+        {{ notification.message }}
+      </span>
+    </div>
+    <div>
+      <mat-icon
+        *ngIf="!notification.read"
+        aria-hidden="true"
+        class="text-sm {{ notification.type }}  !w-[0.875rem] !mr-0"
+      >
+        fiber_manual_record
+      </mat-icon>
+    </div>
+  </button>
+</mat-menu>

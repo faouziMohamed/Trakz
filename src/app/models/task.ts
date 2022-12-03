@@ -40,3 +40,12 @@ export interface ITask extends ITimeStampsDate {
   recurrence: TRecurrence;
   note: ITaskNote;
 }
+
+export enum TaskStatus {
+  earlier = 'earlier',
+  today = 'today',
+  tomorrow = 'tomorrow',
+  later = 'later',
+  completed = 'completed',
+  uncompleted = 'uncompleted',
+}

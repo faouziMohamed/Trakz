@@ -1,11 +1,8 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import {
-  MatLegacyDialog as MatDialog,
-  MatLegacyDialogConfig as MatDialogConfig,
-} from '@angular/material/legacy-dialog';
-import { ITask } from '@models/task';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 
 import { ConfirmDeleteDialogComponent } from '@/layouts/main-layout/right-side-nav/delete-task/confirm-delete-dialog/confirm-delete-dialog.component';
+import { ITask } from '@/models/task';
 
 export interface DialogData {
   title: string;

@@ -1,11 +1,12 @@
 /* eslint-disable no-param-reassign,class-methods-use-this */
-import { Component, Input, OnInit } from '@angular/core';
-import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
+import { formatDate } from '@angular/common';
+import { Component, Input } from '@angular/core';
 import { MatSidenav } from '@angular/material/sidenav';
-import { PageTitles } from '@models/navLabel';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Observable } from 'rxjs';
 
 import { INotification } from '@/app/models/notifications';
+import { PageTitles } from '@/models/navLabel';
 import { NotificationsService } from '@/services/notifications/notifications.service';
 
 @Component({
@@ -13,14 +14,14 @@ import { NotificationsService } from '@/services/notifications/notifications.ser
   templateUrl: './top-navbar.component.html',
   styleUrls: ['./top-navbar.component.scss'],
 })
-export class TopNavbarComponent implements OnInit {
+export class TopNavbarComponent {
   @Input() drawer: MatSidenav | undefined;
 
   @Input() isHandset$: Observable<boolean> | undefined;
 
-  @Input() activePage: { title: string };
+  @Input() activePage: PageTitles;
 
-  currentDate: Date;
+  currentDate = '';
 
   notifications: INotification[] = [];
 
@@ -28,27 +29,11 @@ export class TopNavbarComponent implements OnInit {
     private _notifications: NotificationsService,
     private _snackBar: MatSnackBar,
   ) {
-    this.currentDate = new Date();
-    this.activePage = { title: PageTitles.MyDay };
+    this.activePage = PageTitles.MyDay;
+    this.currentDate = formatDate(new Date(), 'EEEE, MMMM d', 'en-US');
   }
 
-  isMyDay(title: string | PageTitles) {
+  isMyDay(title: PageTitles) {
     return title === PageTitles.MyDay;
-  }
-
-  onNotificationClick(notification: INotification) {
-    notification.read = true;
-  }
-
-  onNotificationDelete(notification: INotification) {
-    this.notifications = this.notifications.filter(
-      (item) => item.id !== notification.id,
-    );
-
-    this._snackBar.open('Notification deleted', 'Dismiss', { duration: 2000 });
-  }
-
-  ngOnInit(): void {
-    this.notifications = this._notifications.getNotifications();
   }
 }

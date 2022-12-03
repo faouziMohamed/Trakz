@@ -1,11 +1,17 @@
 import { Injectable } from '@angular/core';
-import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
-import { PageTitles } from '@models/navLabel';
-import { ITask, ITaskNote, ITaskStep, TRecurrence } from '@models/task';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { BehaviorSubject, map, Observable, Subject } from 'rxjs';
 import { fromPromise } from 'rxjs/internal/observable/innerFrom';
 
-import { createHash } from '@/utils/trakzUtils';
+import { PageTitles } from '@/models/navLabel';
+import {
+  ITask,
+  ITaskNote,
+  ITaskStep,
+  TaskStatus,
+  TRecurrence,
+} from '@/models/task';
+import { createHash, isToday, isTomorrow } from '@/utils/trakzUtils';
 
 const TASKS: ITask[] = [
   {
@@ -141,6 +147,37 @@ export interface CreateTaskProps {
   dueDate?: Date;
 }
 
+function filterByStatusPredicate(status: TaskStatus) {
+  return (task: ITask) => {
+    if (status === TaskStatus.completed) return task.isCompleted;
+    if (status === TaskStatus.uncompleted) return !task.isCompleted;
+    if (!task.dueDate) return false;
+    const today = new Date();
+    if (status === TaskStatus.earlier) return task.dueDate < today;
+    if (status === TaskStatus.today) return isToday(task.dueDate);
+    if (status === TaskStatus.tomorrow) return isTomorrow(task.dueDate);
+    return task.dueDate > today;
+  };
+}
+
+function filterFolderPredicate(folder: PageTitles) {
+  if (folder === PageTitles.Tasks) {
+    return () => true;
+  }
+  if (folder === PageTitles.Planned) {
+    return (task: ITask) => !!task.dueDate;
+  }
+  if (folder === PageTitles.MyDay) {
+    return (task: ITask) => task.isInMyDay;
+  }
+  if (folder === PageTitles.Important) {
+    return (task: ITask) => task.isImportant;
+  }
+  return (task: ITask) => task.parent === folder;
+}
+
+export type FilteredByStatus = Record<TaskStatus, Observable<ITask[]>>;
+
 @Injectable({
   providedIn: 'root',
 })
@@ -173,19 +210,6 @@ export class TaskService {
     `${task.id}${TaskService.toDateString(
       task.createdAt,
     )}${TaskService.toDateString(task.updatedAt)}${task.parent}`;
-
-  private static filterPredicate = (folder: string) => {
-    if (folder === PageTitles.Planned) {
-      return (task: ITask) => !!task.dueDate;
-    }
-    if (folder === PageTitles.MyDay) {
-      return (task: ITask) => task.isInMyDay;
-    }
-    if (folder === PageTitles.Important) {
-      return (task: ITask) => task.isImportant;
-    }
-    return (task: ITask) => task.parent === folder;
-  };
 
   createTask(props: CreateTaskProps): ITask {
     const { text, parent: p } = props;
@@ -239,15 +263,32 @@ export class TaskService {
   getTaskByFolder(folder?: PageTitles): Observable<ITask[]> {
     this.getTasks().subscribe((tasks) => {
       if (folder) {
-        this.filteredTasks.next(
-          tasks.filter(TaskService.filterPredicate(folder)),
-        );
+        this.filteredTasks.next(tasks.filter(filterFolderPredicate(folder)));
       } else {
         this.filteredTasks.next(tasks);
       }
     });
 
     return this.filteredTasks.asObservable();
+  }
+
+  getTasksByStatus(
+    status: TaskStatus | TaskStatus[],
+    folder: PageTitles,
+  ): Observable<ITask[]> | FilteredByStatus {
+    if (Array.isArray(status)) {
+      const filteredTasks: FilteredByStatus = {} as FilteredByStatus;
+      status.forEach((s) => {
+        filteredTasks[s] = this.getTasksByStatus(s, folder) as Observable<
+          ITask[]
+        >;
+      });
+      return filteredTasks;
+    }
+
+    return this.getTaskByFolder(folder).pipe(
+      map((tasks) => tasks.filter(filterByStatusPredicate(status))),
+    );
   }
 
   getTasks(callback?: () => void): Observable<ITask[]> {
@@ -287,7 +328,6 @@ export class TaskService {
     return localStorage.getItem(this.tasksStorageKey);
   }
 
-  // remove all tasks from local storage
   clearTasksFromLocalStorage() {
     localStorage.removeItem(this.tasksStorageKey);
     localStorage.removeItem(this.tasksHashKey);
@@ -354,24 +394,6 @@ export class TaskService {
     return updatedTask;
   }
 
-  updateTaskNote(task: ITask, note: ITaskNote) {
-    const updatedTask = { ...task, note };
-    this.updateTask(updatedTask);
-    return updatedTask;
-  }
-
-  updateTaskRecurrence(task: ITask, recurrence: TRecurrence) {
-    const updatedTask = { ...task, recurrence };
-    this.updateTask(updatedTask);
-    return updatedTask;
-  }
-
-  updateTaskDueDate(task: ITask, dueDate: Date) {
-    const updatedTask = { ...task, dueDate };
-    this.updateTask(updatedTask);
-    return updatedTask;
-  }
-
   promoteStepToTask(task: ITask, step: ITaskStep) {
     const newTask = this.stepToTask(step, task);
     this.removeStep(task, step);
@@ -384,12 +406,13 @@ export class TaskService {
     );
   }
 
-  countTasks(folder?: PageTitles): number {
-    if (folder) {
-      return this._tasks.value.filter(TaskService.filterPredicate(folder))
-        .length;
-    }
-    return this._tasks.value.length;
+  countTasksObservable(folder?: PageTitles): Observable<number> {
+    return this._tasks.pipe(
+      map((tasks) => {
+        if (folder) return tasks.filter(filterFolderPredicate(folder)).length;
+        return tasks.length;
+      }),
+    );
   }
 
   private stepToTask(step: ITaskStep, task: ITask): ITask {

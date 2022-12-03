@@ -1,44 +1,12 @@
-import { BreakpointObserver } from '@angular/cdk/layout';
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatSidenav } from '@angular/material/sidenav';
-import { PageTitles } from '@models/navLabel';
-import { IUser } from '@models/User';
 import { Observable } from 'rxjs';
 
+import { INavLink, PageTitles } from '@/models/navLabel';
+import { IUser } from '@/models/User';
+import { FoldersService } from '@/services/tasks/folders.service';
 import { TaskService } from '@/services/tasks/task.service';
 
-const NAV_LINKS = [
-  {
-    label: PageTitles.MyDay,
-    link: '/my-day',
-    icon: 'wb_sunny',
-    count: 12,
-  },
-  {
-    label: PageTitles.Important,
-    link: '/important',
-    icon: 'star',
-    count: 3,
-  },
-  {
-    label: PageTitles.Planned,
-    link: '/planned',
-    icon: 'calendar_month',
-    count: 0,
-  },
-  {
-    label: PageTitles.Tasks,
-    link: '/tasks',
-    icon: 'checklist',
-    count: 145,
-  },
-  {
-    label: PageTitles.Projects,
-    link: '/projects',
-    icon: 'folder',
-    count: 1,
-  },
-];
 @Component({
   selector: 'app-left-side-nav',
   templateUrl: './left-side-nav.component.html',
@@ -47,16 +15,27 @@ const NAV_LINKS = [
 export class LeftSideNavComponent {
   @Input() isHandset$: Observable<boolean> | undefined;
 
-  navLinks = NAV_LINKS;
+  navLinks: INavLink[] = [];
 
   @Input() user: IUser | undefined;
 
-  @Input() drawer: MatSidenav | undefined;
+  @Input() drawer!: MatSidenav;
 
-  @Input() activePage: { title: string } | undefined;
+  @Input() activePage!: PageTitles;
+
+  @Output() activePageChange = new EventEmitter<PageTitles>();
 
   constructor(
-    private _breakpointObserver: BreakpointObserver,
     private _tasksService: TaskService,
-  ) {}
+    private _foldersService: FoldersService,
+  ) {
+    this._foldersService.getFolders().subscribe((folders) => {
+      this.navLinks = folders;
+    });
+  }
+
+  onActivePageChange(title: PageTitles) {
+    this.activePage = title;
+    this.activePageChange.emit(title);
+  }
 }

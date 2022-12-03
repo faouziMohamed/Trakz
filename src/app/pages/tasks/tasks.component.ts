@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { ITask } from '@models/task';
 
-import { TaskService } from '@/services/tasks/task.service';
+import { PageTitles } from '@/models/navLabel';
+import { ITask, TaskStatus } from '@/models/task';
+import { FilteredByStatus, TaskService } from '@/services/tasks/task.service';
 
 @Component({
   selector: 'app-tasks',
@@ -11,11 +12,34 @@ import { TaskService } from '@/services/tasks/task.service';
 export class TasksComponent implements OnInit {
   tasks: ITask[] = [];
 
-  constructor(private tasksData: TaskService) {}
+  tasksData: Record<TaskStatus, ITask[]> = {} as Record<TaskStatus, ITask[]>;
+
+  toFilter = [TaskStatus.uncompleted, TaskStatus.completed];
+
+  constructor(private _tasksService: TaskService) {}
 
   ngOnInit(): void {
-    this.tasksData.getTasks().subscribe((tasks) => {
+    this._tasksService.getTasks().subscribe((tasks) => {
       this.tasks = tasks;
     });
+
+    const filtered = this._tasksService.getTasksByStatus(
+      this.toFilter,
+      PageTitles.Tasks,
+    ) as FilteredByStatus;
+
+    this.toFilter.forEach((status) => {
+      filtered[status].subscribe((tasks) => {
+        this.tasksData[status] = tasks;
+      });
+    });
+  }
+
+  getUncompleted() {
+    return this.tasksData[TaskStatus.uncompleted];
+  }
+
+  getCompleted() {
+    return this.tasksData[TaskStatus.completed];
   }
 }

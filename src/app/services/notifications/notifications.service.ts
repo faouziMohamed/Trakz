@@ -1,6 +1,7 @@
 /* eslint-disable class-methods-use-this */
 import { Injectable } from '@angular/core';
-import { INotification } from '@models/notifications';
+
+import { INotification } from '@/models/notifications';
 
 const NOTIFICATIONS: INotification[] = [
   {

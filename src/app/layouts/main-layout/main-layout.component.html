@@ -1,5 +1,8 @@
-<div class="flex justify-center absolute inset-0">
-  <mat-sidenav-container class="h-full w-full max-w-screen-2xl">
+<div class="flex justify-center absolute inset-0 bg-[#fafafa]">
+  <mat-sidenav-container
+    [ngClass]="bgImage && bgImage"
+    class="h-full w-full max-w-screen-2xl bg-cover bg-no-repeat bg-center"
+  >
     <mat-sidenav
       #drawer
       [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
@@ -9,7 +12,7 @@
       fixedInViewport
     >
       <app-left-side-nav
-        [activePage]="activePage"
+        [(activePage)]="activePage"
         [drawer]="drawer"
         [isHandset$]="isHandset$"
         [user]="user"
@@ -17,8 +20,7 @@
       </app-left-side-nav>
     </mat-sidenav>
     <mat-sidenav-content
-      [ngClass]="bgImage && bgImage"
-      class="relative bg-cover bg-no-repeat bg-center !flex h-full flex-col rounded-tl-2xl !overflow-hidden bg-slate-300"
+      class="relative !flex h-full flex-col !overflow-hidden"
     >
       <div class="bg-overlay"></div>
       <app-top-navbar
@@ -45,7 +47,7 @@
           : 'side'
       "
       [opened]="openRightSideNav"
-      class="w-[90%] xs:w-[20rem] relative !overflow-hidden !border-none bg-gray-200 bg-inherit"
+      class="w-[90%] xs:w-[20rem] relative !overflow-hidden !border-none bg-[#fafafa] bg-inherit"
       position="end"
     >
       <app-right-side-nav></app-right-side-nav>

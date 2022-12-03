@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
-import { ITaskNote } from '@models/task';
+
+import { ITaskNote } from '@/models/task';
 
 @Component({
   selector: 'app-task-note',

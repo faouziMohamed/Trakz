@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
-import { HomeComponent } from '@/pages/home/home.component';
 import { ImportantComponent } from '@/pages/important/important.component';
 import { MyDayComponent } from '@/pages/my-day/my-day.component';
 import { NotFoundComponent } from '@/pages/not-found/not-found.component';
@@ -12,7 +11,8 @@ import { TasksComponent } from '@/pages/tasks/tasks.component';
 const routes: Routes = [
   {
     path: '',
-    component: HomeComponent,
+    redirectTo: 'my-day',
+    pathMatch: 'full',
   },
   {
     path: 'my-day',

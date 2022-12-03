@@ -1,7 +1,7 @@
 /* eslint-disable class-methods-use-this */
 import { Component, Input, OnInit } from '@angular/core';
-import { ITask, ITaskStep } from '@models/task';
 
+import { ITask, ITaskStep } from '@/models/task';
 import { TaskService } from '@/services/tasks/task.service';
 import {
   chooseDateToDisplay,

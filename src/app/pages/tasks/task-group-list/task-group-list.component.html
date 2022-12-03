@@ -1,0 +1,21 @@
+<section *ngIf="tasks.length" class="flex gap-4 flex-col">
+  <h2 [attr.aria-label]="title" class="bg-gray-200 rounded !m-0 w-fit">
+    <button
+      (click)="accordionItem.toggle()"
+      [attr.aria-label]="'Toggle' + title"
+      class="text-[1rem] px-3 py-1 !font-kanit flex items-center gap-1"
+    >
+      <mat-icon>
+        {{ accordionItem.expanded ? 'chevron_right' : 'keyboard_arrow_down' }}
+      </mat-icon>
+      <span>{{ title }}</span>
+    </button>
+  </h2>
+  <div
+    [attr.id]="'accordion-body-' + title"
+    [ngClass]="{ hidden: accordionItem.expanded }"
+    class="flex flex-col w-full gap-1"
+  >
+    <app-task-row *ngFor="let task of tasks" [task]="task"></app-task-row>
+  </div>
+</section>

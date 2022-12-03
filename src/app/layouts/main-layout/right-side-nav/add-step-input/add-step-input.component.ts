@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { ITask, ITaskStep } from '@models/task';
 
+import { ITask, ITaskStep } from '@/models/task';
 import { TaskService } from '@/services/tasks/task.service';
 
 @Component({

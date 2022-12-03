@@ -7,7 +7,6 @@ module.exports = {
       parserOptions: {
         project: ['tsconfig.json'],
         createDefaultProgram: true,
-        ecmaVersion: 'latest',
       },
       env: { browser: true },
       extends: [

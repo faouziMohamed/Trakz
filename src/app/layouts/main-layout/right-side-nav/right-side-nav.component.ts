@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion,no-param-reassign,class-methods-use-this */
 import { Component, OnDestroy } from '@angular/core';
-import { ITask, ITaskStep, TRecurrence } from '@models/task';
 import { Subscription } from 'rxjs';
 
+import { ITask, ITaskStep, TRecurrence } from '@/models/task';
 import { TaskService } from '@/services/tasks/task.service';
 import {
   capitalizeFirstLetter,

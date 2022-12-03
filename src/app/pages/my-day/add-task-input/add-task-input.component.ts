@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
-import { PageTitles } from '@models/navLabel';
-import { ITask } from '@models/task';
 
+import { PageTitles } from '@/models/navLabel';
+import { ITask } from '@/models/task';
 import { TaskService } from '@/services/tasks/task.service';
 import { slugToTitle } from '@/utils/trakzUtils';
 
