@@ -7,10 +7,10 @@ import {
 } from '@angular/core';
 import { MatMenuTrigger } from '@angular/material/menu';
 
-import { ITaskStep } from '@/models/task';
+import { TaskStep } from '@/models/task';
 
 export interface IToggleComplete {
-  id: ITaskStep['id'];
+  id: TaskStep['id'];
 }
 
 @Component({
@@ -23,22 +23,22 @@ export class TaskStepComponent {
 
   hasMouseOut = false;
 
-  @Input() step!: ITaskStep;
+  @Input() step!: TaskStep;
 
-  @Output() removeStep = new EventEmitter<ITaskStep['id']>();
+  @Output() removeStep = new EventEmitter<TaskStep['id']>();
 
-  @Output() promoteStepToTask = new EventEmitter<ITaskStep['id']>();
+  @Output() promoteStepToTask = new EventEmitter<TaskStep['id']>();
 
-  @Output() toggleStepIsComplete = new EventEmitter<ITaskStep['id']>();
+  @Output() toggleStepIsComplete = new EventEmitter<TaskStep['id']>();
 
   @ViewChild(MatMenuTrigger)
   stepMenu: MatMenuTrigger | undefined;
 
   constructor() {
-    this.step = {} as ITaskStep;
+    this.step = {} as TaskStep;
   }
 
-  showCompletedIcon(step: ITaskStep) {
+  showCompletedIcon(step: TaskStep) {
     if (step.isCompleted) {
       return 'check_circle';
     }
@@ -61,15 +61,15 @@ export class TaskStepComponent {
     this.hasMouseOut = true;
   }
 
-  emitToggleStepIsComplete(step: ITaskStep) {
+  emitToggleStepIsComplete(step: TaskStep) {
     this.toggleStepIsComplete.emit(step.id);
   }
 
-  emitPromoteStepToTask(step: ITaskStep) {
+  emitPromoteStepToTask(step: TaskStep) {
     this.promoteStepToTask.emit(step.id);
   }
 
-  emitRemoveStep(step: ITaskStep) {
+  emitRemoveStep(step: TaskStep) {
     this.removeStep.emit(step.id);
   }
 

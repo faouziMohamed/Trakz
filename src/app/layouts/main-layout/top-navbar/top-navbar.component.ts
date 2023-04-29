@@ -6,7 +6,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Observable } from 'rxjs';
 
 import { INotification } from '@/app/models/notifications';
-import { PageTitles } from '@/models/navLabel';
+import { PageTitles, pageTitles } from '@/models/navLabel';
 import { NotificationsService } from '@/services/notifications/notifications.service';
 
 @Component({
@@ -29,11 +29,11 @@ export class TopNavbarComponent {
     private _notifications: NotificationsService,
     private _snackBar: MatSnackBar,
   ) {
-    this.activePage = PageTitles.MyDay;
+    this.activePage = pageTitles.MyDay;
     this.currentDate = formatDate(new Date(), 'EEEE, MMMM d', 'en-US');
   }
 
   isMyDay(title: PageTitles) {
-    return title === PageTitles.MyDay;
+    return title === pageTitles.MyDay;
   }
 }

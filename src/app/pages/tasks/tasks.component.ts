@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
-import { PageTitles } from '@/models/navLabel';
+import { pageTitles } from '@/models/navLabel';
 import { ITask, TaskStatus } from '@/models/task';
 import { FilteredByStatus, TaskService } from '@/services/tasks/task.service';
 
@@ -25,7 +25,7 @@ export class TasksComponent implements OnInit {
 
     const filtered = this._tasksService.getTasksByStatus(
       this.toFilter,
-      PageTitles.Tasks,
+      pageTitles.Tasks,
     ) as FilteredByStatus;
 
     this.toFilter.forEach((status) => {

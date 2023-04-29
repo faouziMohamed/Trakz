@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
-import { PageTitles } from '@/models/navLabel';
+import { pageTitles } from '@/models/navLabel';
 import { ITask } from '@/models/task';
 import { TaskService } from '@/services/tasks/task.service';
 
@@ -15,7 +15,7 @@ export class PlannedComponent implements OnInit {
   constructor(private tasksData: TaskService) {}
 
   ngOnInit(): void {
-    this.tasksData.getTaskByFolder(PageTitles.Planned).subscribe((tasks) => {
+    this.tasksData.getTaskByFolder(pageTitles.Planned).subscribe((tasks) => {
       this.tasks = tasks;
     });
   }

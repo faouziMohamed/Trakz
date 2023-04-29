@@ -3,11 +3,11 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { INavLink, PageTitles } from '@/models/navLabel';
 
 @Component({
-  selector: 'app-nav-list-item',
-  templateUrl: './nav-list-item.component.html',
-  styleUrls: ['./nav-list-item.component.scss'],
+  selector: 'app-sidebar-item',
+  templateUrl: './left-sidebar-item.component.html',
+  styleUrls: ['./left-sidebar-item.component.scss'],
 })
-export class NavListItemComponent {
+export class LeftSidebarItemComponent {
   @Input() navLink!: INavLink;
 
   @Output() activePageChange = new EventEmitter<PageTitles>();

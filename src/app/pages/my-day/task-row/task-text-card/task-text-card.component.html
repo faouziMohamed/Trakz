@@ -2,20 +2,20 @@
   <div class="!flex gap-2 items-start">
     <button
       (click)="onClickCompleteButton(task)"
-      class="!h-7 !w-7 !flex justify-center items-center"
+      class="!flex justify-center items-center !-mt-3.5"
       mat-icon-button
     >
       <mat-icon
         (mouseout)="onMouseLeaveCompletedIcon()"
         (mouseover)="onMouseEnterCompletedIcon()"
-        class="basis-auto shrink-0 text-[1.3rem] flex items-center"
+        class="basis-auto shrink-0 text-[1.6rem] flex items-center"
       >
         {{ showCompletedIcon(task) }}
       </mat-icon>
     </button>
     <p
       [ngClass]="{textClassName, '!line-through':task.isCompleted}"
-      class="text-[0.8rem] !decoration-2 font-[Ubuntu]"
+      class="text-[1.07rem] !decoration-2 font-ubuntu"
     >
       {{ task.text }}
     </p>
@@ -25,7 +25,7 @@
     class="basis-auto shrink-0 !-mt-3"
     mat-icon-button
   >
-    <mat-icon class="!text-[1.2rem]">
+    <mat-icon class="!text-[1.3rem]">
       {{ task.isImportant ? 'star' : 'star_border' }}
     </mat-icon>
   </button>

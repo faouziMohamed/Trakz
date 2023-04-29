@@ -5,8 +5,8 @@
   <div class="overflow-hidden flex flex-col gap-2 w-full">
     <div class="flex pt-1 items-center justify-end">
       <button
-        (click)="onRightSidenavClose()"
-        class="!text-[0.88rem] text-gray-500"
+        (click)="onRightSidebarClose()"
+        class="!text-[0.98rem] text-gray-500"
         mat-icon-button
       >
         <mat-icon>close</mat-icon>
@@ -14,7 +14,7 @@
     </div>
 
     <div class="overflow-y-auto flex px-1 flex-col gap-2">
-      <div class="!flex border-gray-300 rounded border !flex-col">
+      <div class="!flex border-gray-300 py-1 rounded border !flex-col">
         <app-opened-task
           (toggleTaskIsComplete)="onToggleTaskIsCompleted($event)"
           (toggleTaskIsImportant)="onToggleTaskIsImportant($event)"

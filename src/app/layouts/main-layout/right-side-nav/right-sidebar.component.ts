@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion,no-param-reassign,class-methods-use-this */
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 
-import { ITask, ITaskStep, TRecurrence } from '@/models/task';
+import { ITask, Recurrence, TaskStep } from '@/models/task';
 import { TaskService } from '@/services/tasks/task.service';
 import {
   capitalizeFirstLetter,
@@ -11,20 +11,34 @@ import {
 } from '@/utils/trakzUtils';
 
 @Component({
-  selector: 'app-right-side-nav',
-  templateUrl: './right-side-nav.component.html',
-  styleUrls: ['./right-side-nav.component.scss'],
+  selector: 'app-right-sidebar',
+  templateUrl: './right-sidebar.component.html',
+  styleUrls: ['./right-sidebar.component.scss'],
 })
-export class RightSideNavComponent implements OnDestroy {
+export class RightSidebarComponent implements OnDestroy, OnInit {
   task: ITask | undefined;
 
-  private readonly _taskObserver: Subscription | undefined;
+  currentTaskId: string | undefined;
 
-  constructor(private _tasksService: TaskService) {
+  private _taskObserver: Subscription | undefined;
+
+  constructor(private _tasksService: TaskService) {}
+
+  ngOnInit(): void {
     this._taskObserver = this._tasksService
       .getSelectedTask()
       .subscribe((task) => {
-        if (task) this.task = task;
+        if (task) {
+          const taskId = TaskService.taskGeneratedId(task);
+          // If clicked on the same task, close the right sidebar
+          if (taskId === this.currentTaskId) {
+            this.onRightSidebarClose();
+            this.currentTaskId = undefined;
+            return;
+          }
+          this.task = task;
+          this.currentTaskId = taskId;
+        }
       });
   }
 
@@ -36,13 +50,13 @@ export class RightSideNavComponent implements OnDestroy {
     return isDateOverdue(dueDate);
   }
 
-  getTaskRecurrence(recurrence: TRecurrence) {
+  getTaskRecurrence(recurrence: Recurrence) {
     return typeof recurrence === 'string'
       ? capitalizeFirstLetter(recurrence)
       : `Every ${recurrence.every} ${recurrence.unit}`;
   }
 
-  onRightSidenavClose() {
+  onRightSidebarClose() {
     this._tasksService.setSelection(null);
     this.task = undefined;
   }
@@ -55,11 +69,11 @@ export class RightSideNavComponent implements OnDestroy {
     };
   }
 
-  addStep(step: ITaskStep) {
+  addStep(step: TaskStep) {
     this._tasksService.addStep(this.task!, step);
   }
 
-  onToggleStepComplete(id: ITaskStep['id']) {
+  onToggleStepComplete(id: TaskStep['id']) {
     const step = this.task!.steps.find((s) => s.id === id);
     if (step) {
       step.isCompleted = !step.isCompleted;
@@ -67,14 +81,14 @@ export class RightSideNavComponent implements OnDestroy {
     }
   }
 
-  onRemoveStep(id: ITaskStep['id']) {
+  onRemoveStep(id: TaskStep['id']) {
     const step = this.task!.steps.find((s) => s.id === id);
     if (step) {
       this._tasksService.removeStep(this.task!, step);
     }
   }
 
-  onPromoteStepToTask(id: ITaskStep['id']) {
+  onPromoteStepToTask(id: TaskStep['id']) {
     const step = this.task!.steps.find((s) => s.id === id);
     if (step) {
       this._tasksService.promoteStepToTask(this.task!, step);
@@ -91,7 +105,7 @@ export class RightSideNavComponent implements OnDestroy {
 
   onDeleteTask(task: ITask) {
     this._tasksService.removeTask(task);
-    this.onRightSidenavClose();
+    this.onRightSidebarClose();
   }
 
   formatDate(dueDate: Date) {

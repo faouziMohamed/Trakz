@@ -1,4 +1,4 @@
-export interface ICustomRecurrence {
+export interface CustomRecurrence {
   every: number;
   unit: 'day' | 'days' | 'week' | 'month' | 'year';
 }
@@ -7,20 +7,20 @@ export interface ITimeStampsDate {
   updatedAt: Date;
 }
 
-export interface ITaskStep extends ITimeStampsDate {
+export interface TaskStep extends ITimeStampsDate {
   id: number;
   text: string;
   isCompleted: boolean;
 }
 
-export type TRecurrence =
+export type Recurrence =
   | 'daily'
   | 'weekdays'
   | 'weekly'
   | 'monthly'
   | 'yearly'
   | 'once'
-  | ICustomRecurrence;
+  | CustomRecurrence;
 
 export interface ITaskNote {
   text: string | '';
@@ -36,8 +36,8 @@ export interface ITask extends ITimeStampsDate {
   isInMyDay: boolean;
   isImportant: boolean;
   isCompleted: boolean;
-  steps: ITaskStep[];
-  recurrence: TRecurrence;
+  steps: TaskStep[];
+  recurrence: Recurrence;
   note: ITaskNote;
 }
 

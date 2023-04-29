@@ -1,4 +1,4 @@
-<div class="bg-inherit flex pt-4 pb-2 gap-2 !flex-col">
+<div class="bg-inherit text-base flex pt-4 pb-2 gap-2 !flex-col">
   <div class="flex w-full gap-4">
     <button
       (click)="drawer.toggle()"
@@ -6,11 +6,17 @@
       mat-icon-button
       type="button"
     >
-      <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+      <mat-icon aria-label="Side nav toggle icon" class="text-2 xl"
+        >menu</mat-icon
+      >
     </button>
     <a class="flex gap-2 items-center" routerLink="/">
-      <app-trakz-logo className="w-[1.5rem] h-[1.5rem]"></app-trakz-logo>
-      <h1 class="!text-xl !m-0">Trakz</h1>
+      <app-trakz-logo
+        className="w-[2rem] h-[2rem]"
+        height="40"
+        width="40"
+      ></app-trakz-logo>
+      <h1 class="!text-3xl !font-bold !m-0">Trakz</h1>
     </a>
   </div>
   <mat-divider></mat-divider>
@@ -22,11 +28,11 @@
   </app-user-avatar>
 </div>
 <mat-divider></mat-divider>
-<mat-nav-list class="w-full !flex flex-col gap-1 nav-links" id="nav-link-list">
-  <app-nav-list-item
+<mat-nav-list class="w-full !flex flex-col gap-2 nav-links" id="nav-link-list">
+  <app-sidebar-item
     (activePageChange)="onActivePageChange($event)"
     *ngFor="let navLink of navLinks"
     [navLink]="navLink"
   >
-  </app-nav-list-item>
+  </app-sidebar-item>
 </mat-nav-list>

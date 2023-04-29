@@ -38,3 +38,5 @@ node_modules/
 # TernJS port file
 # Stores VSCode versions used for testing VSCode extensions
 # yarn v2
+out-tsc/
+dist

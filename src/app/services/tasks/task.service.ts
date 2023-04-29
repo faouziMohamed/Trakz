@@ -3,13 +3,13 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { BehaviorSubject, map, Observable, Subject } from 'rxjs';
 import { fromPromise } from 'rxjs/internal/observable/innerFrom';
 
-import { PageTitles } from '@/models/navLabel';
+import { PageTitles, pageTitles } from '@/models/navLabel';
 import {
   ITask,
   ITaskNote,
-  ITaskStep,
+  Recurrence,
   TaskStatus,
-  TRecurrence,
+  TaskStep,
 } from '@/models/task';
 import { createHash, isToday, isTomorrow } from '@/utils/trakzUtils';
 
@@ -141,8 +141,8 @@ export interface CreateTaskProps {
   parent?: string;
   isInMyDay?: boolean;
   isImportant?: boolean;
-  steps?: ITaskStep[];
-  recurrence?: TRecurrence;
+  steps?: TaskStep[];
+  recurrence?: Recurrence;
   note?: ITaskNote;
   dueDate?: Date;
 }
@@ -161,16 +161,16 @@ function filterByStatusPredicate(status: TaskStatus) {
 }
 
 function filterFolderPredicate(folder: PageTitles) {
-  if (folder === PageTitles.Tasks) {
+  if (folder === pageTitles.Tasks) {
     return () => true;
   }
-  if (folder === PageTitles.Planned) {
+  if (folder === pageTitles.Planned) {
     return (task: ITask) => !!task.dueDate;
   }
-  if (folder === PageTitles.MyDay) {
+  if (folder === pageTitles.MyDay) {
     return (task: ITask) => task.isInMyDay;
   }
-  if (folder === PageTitles.Important) {
+  if (folder === pageTitles.Important) {
     return (task: ITask) => task.isImportant;
   }
   return (task: ITask) => task.parent === folder;
@@ -215,23 +215,23 @@ export class TaskService {
     const { text, parent: p } = props;
     let { isInMyDay, isImportant, dueDate, recurrence } = props;
     const { steps, note } = props;
-    let parent = p ?? PageTitles.Tasks;
+    let parent = p ?? pageTitles.Tasks;
     if (
-      p === PageTitles.MyDay ||
-      p === PageTitles.Important ||
-      p === PageTitles.Planned
+      p === pageTitles.MyDay ||
+      p === pageTitles.Important ||
+      p === pageTitles.Planned
     ) {
-      parent = PageTitles.Tasks;
+      parent = pageTitles.Tasks;
     }
 
-    if (p === PageTitles.Important) {
+    if (p === pageTitles.Important) {
       isImportant = true;
     }
-    if (p === PageTitles.MyDay) {
+    if (p === pageTitles.MyDay) {
       isInMyDay = true;
     }
 
-    if (p === PageTitles.Planned) {
+    if (p === pageTitles.Planned) {
       dueDate = new Date();
       recurrence = 'once';
     }
@@ -363,19 +363,19 @@ export class TaskService {
     this.saveTasksToLocalStorage();
   }
 
-  addStep(task: ITask, step: ITaskStep) {
+  addStep(task: ITask, step: TaskStep) {
     const newStep = { ...step };
     if (step.id === 0) newStep.id = task.steps.length || 1;
     task.steps.push(newStep);
     this.updateTask(task);
   }
 
-  updateStep(task: ITask, step: ITaskStep) {
+  updateStep(task: ITask, step: TaskStep) {
     const steps = task.steps.map((s) => (s.id === step.id ? step : s));
     this.updateTask({ ...task, steps });
   }
 
-  removeStep(task: ITask, step: ITaskStep) {
+  removeStep(task: ITask, step: TaskStep) {
     const steps = task.steps.filter((s) => s.id !== step.id);
     this.updateTask({ ...task, steps });
   }
@@ -394,7 +394,7 @@ export class TaskService {
     return updatedTask;
   }
 
-  promoteStepToTask(task: ITask, step: ITaskStep) {
+  promoteStepToTask(task: ITask, step: TaskStep) {
     const newTask = this.stepToTask(step, task);
     this.removeStep(task, step);
     this.addTask(newTask);
@@ -415,7 +415,7 @@ export class TaskService {
     );
   }
 
-  private stepToTask(step: ITaskStep, task: ITask): ITask {
+  private stepToTask(step: TaskStep, task: ITask): ITask {
     return {
       id: this._tasks.value.length + 1,
       text: step.text,

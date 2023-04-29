@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 
-import { PageTitles } from '@/models/navLabel';
+import { pageTitles } from '@/models/navLabel';
 import { ITask } from '@/models/task';
 import { TaskService } from '@/services/tasks/task.service';
 import { slugToTitle } from '@/utils/trakzUtils';
@@ -58,7 +58,7 @@ export class AddTaskInputComponent implements OnInit {
     const createdTask = this._taskService.createTask({
       text: taskInput.value,
       parent: this.parentFolder,
-      isInMyDay: this.parentFolder === PageTitles.MyDay,
+      isInMyDay: this.parentFolder === pageTitles.MyDay,
     });
     // eslint-disable-next-line no-param-reassign
     taskInput.value = '';

@@ -8,11 +8,11 @@ import { FoldersService } from '@/services/tasks/folders.service';
 import { TaskService } from '@/services/tasks/task.service';
 
 @Component({
-  selector: 'app-left-side-nav',
-  templateUrl: './left-side-nav.component.html',
-  styleUrls: ['./left-side-nav.component.scss'],
+  selector: 'app-left-sidebar',
+  templateUrl: './left-sidebar.component.html',
+  styleUrls: ['./left-sidebar.component.scss'],
 })
-export class LeftSideNavComponent {
+export class LeftSidebarComponent {
   @Input() isHandset$: Observable<boolean> | undefined;
 
   navLinks: INavLink[] = [];

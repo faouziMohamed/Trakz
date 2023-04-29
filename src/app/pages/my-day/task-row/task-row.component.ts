@@ -1,7 +1,7 @@
 /* eslint-disable class-methods-use-this */
 import { Component, Input, OnInit } from '@angular/core';
 
-import { ITask, ITaskStep } from '@/models/task';
+import { ITask, TaskStep } from '@/models/task';
 import { TaskService } from '@/services/tasks/task.service';
 import {
   chooseDateToDisplay,
@@ -20,7 +20,7 @@ export class TaskRowComponent implements OnInit {
   constructor(private _tasksService: TaskService) {}
 
   // eslint-disable-next-line class-methods-use-this
-  countCompletedSteps(steps: ITaskStep[]) {
+  countCompletedSteps(steps: TaskStep[]) {
     return steps.filter((step) => step.isCompleted).length;
   }
 
@@ -34,6 +34,7 @@ export class TaskRowComponent implements OnInit {
 
   onClickOnTaskRow($event: MouseEvent, task: ITask) {
     const target = $event.target as HTMLElement;
+    // ignore click on buttons and icons inside the task row
     if (target.tagName === 'BUTTON' || target.tagName === 'MAT-ICON') {
       return;
     }

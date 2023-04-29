@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 
-import { ITask, ITaskStep } from '@/models/task';
+import { ITask, TaskStep } from '@/models/task';
 import { TaskService } from '@/services/tasks/task.service';
 
 @Component({
@@ -12,7 +12,7 @@ import { TaskService } from '@/services/tasks/task.service';
 export class AddStepInputComponent implements OnInit {
   inputHasFocus = false;
 
-  @Output() addStep: EventEmitter<ITaskStep> = new EventEmitter<ITaskStep>();
+  @Output() addStep: EventEmitter<TaskStep> = new EventEmitter<TaskStep>();
 
   @Output() taskChange = new EventEmitter<ITask>();
 
@@ -38,7 +38,7 @@ export class AddStepInputComponent implements OnInit {
 
   emitAddStep(taskInput: HTMLInputElement) {
     if (taskInput.value.trim()) {
-      const step: ITaskStep = {
+      const step: TaskStep = {
         id: 0,
         text: taskInput.value.trim(),
         isCompleted: false,
