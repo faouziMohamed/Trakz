@@ -33,7 +33,6 @@ export class RightSidebarComponent implements OnDestroy, OnInit {
           // If clicked on the same task, close the right sidebar
           if (taskId === this.currentTaskId) {
             this.onRightSidebarClose();
-            this.currentTaskId = undefined;
             return;
           }
           this.task = task;
@@ -59,6 +58,7 @@ export class RightSidebarComponent implements OnDestroy, OnInit {
   onRightSidebarClose() {
     this._tasksService.setSelection(null);
     this.task = undefined;
+    this.currentTaskId = undefined;
   }
 
   toggleIsInMyDay() {
