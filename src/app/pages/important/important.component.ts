@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
-import { PageTitles } from '@/models/navLabel';
-import { ITask } from '@/models/task';
+import { pageTitles } from '@/models/navLabel';
+import { Task } from '@/models/task';
 import { TaskService } from '@/services/tasks/task.service';
 
 @Component({
@@ -10,13 +10,15 @@ import { TaskService } from '@/services/tasks/task.service';
   styleUrls: ['./important.component.scss'],
 })
 export class ImportantComponent implements OnInit {
-  tasks: ITask[] = [];
+  tasks: Task[] = [];
 
   constructor(private tasksData: TaskService) {}
 
   ngOnInit(): void {
-    this.tasksData.getTaskByFolder(PageTitles.Important).subscribe((tasks) => {
-      this.tasks = tasks;
-    });
+    this.tasksData //
+      .getTaskByFolder(pageTitles.Important) //
+      .subscribe((folderNameWithTasks) => {
+        this.tasks = folderNameWithTasks.tasks;
+      });
   }
 }

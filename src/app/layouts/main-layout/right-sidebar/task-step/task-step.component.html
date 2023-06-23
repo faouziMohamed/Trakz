@@ -1,0 +1,92 @@
+<div
+  (contextmenu)="onRightClickInTheStep($event)"
+  *ngIf="step"
+  class="flex task-step pl-2 pt-1 bg-gray-300 bg-opacity-10 hover:bg-opacity-25 justify-between items-start"
+>
+  <div *ngIf="!_editionStarted" class="flex gap-1 w-full">
+    <mat-icon
+      (click)="emitToggleStepIsComplete(step)"
+      (mouseout)="onMouseLeaveCompletedIcon()"
+      (mouseover)="onMouseEnterCompletedIcon()"
+      class="basis-auto !w-[1rem] !h-[1.4rem] text-[1rem] shrink-0 !flex items-center"
+    >
+      {{ showCompletedIcon(step) }}
+    </mat-icon>
+    <p
+      (click)="setEditionStarted(step.id)"
+      [ngClass]="{ '!line-through': step.isCompleted }"
+      class="!text-[0.8rem] w-full focus-visible:outline-none decoration-2 !font-[Ubuntu] !m-0"
+      contenteditable="true"
+    >
+      {{ step.content }}
+    </p>
+  </div>
+
+  <div *ngIf="_editionStarted" class="flex gap-1 w-full">
+    <div
+      (click)="taskInput.focus()"
+      (contextmenu)="$event.preventDefault()"
+      (keydown.enter)="setEditionEnded()"
+      class="w-full flex items-center rounded focus-within:bg-gray-100 focus-within:outline outline-2 outline-offset-2 text-sky-800"
+    >
+      <mat-icon
+        #inputIcon
+        (click)="emitToggleStepIsComplete(step)"
+        class="basis-auto pointer-events-none select-none shrink-0 !text-[0.98rem] !w-[0.98rem] !h-[0.99rem] flex items-center"
+      >
+        {{ showCompletedIcon(step) }}
+      </mat-icon>
+      <input
+        #taskInput
+        (blur)="setEditionEnded()"
+        (keydown)="onStepEditionEnded($event)"
+        [defaultValue]="step.content"
+        [id]="step.id"
+        class="placeholder-sky-700 focus-visible:outline-none w-full rounded py-1 bg-transparent px-1 !text-[0.8rem]"
+        placeholder="Next step"
+        type="text"
+      />
+    </div>
+  </div>
+
+  <button
+    [matMenuTriggerFor]="stepMenu"
+    class="basis-auto shrink-0 !-mt-3 !flex items-center self-center"
+    mat-icon-button
+  >
+    <mat-icon class="!text-[1.2rem]">more_vert</mat-icon>
+  </button>
+  <mat-menu #stepMenu="matMenu" class="!py-0" id="right-step-item">
+    <ng-template matMenuContent>
+      <button
+        (click)="emitToggleStepIsComplete(step)"
+        class="!text-[0.8rem] !flex items-center"
+        mat-menu-item
+      >
+        <mat-icon class="text-[0.8rem] !w-[0.8rem] !h-[0.8rem]">
+          {{ step.isCompleted ? 'done' : 'done_outline' }}
+        </mat-icon>
+        <span>Mark as {{ step.isCompleted ? 'not ' : '' }} completed</span>
+      </button>
+      <button
+        (click)="emitPromoteStepToTask(step)"
+        *ngIf="!step.isCompleted"
+        class="!text-[0.8rem] !flex items-center"
+        mat-menu-item
+      >
+        <mat-icon class="text-[0.8rem] !w-[0.8rem] !h-[0.8rem]"> add</mat-icon>
+        <span>Promote to task</span>
+      </button>
+      <button
+        (click)="emitRemoveStep(step)"
+        class="!text-[0.8rem] text-red-700"
+        mat-menu-item
+      >
+        <mat-icon class="text-[0.8rem] !w-[0.8rem] !h-[0.8rem] text-red-700">
+          delete
+        </mat-icon>
+        <span>Delete step</span>
+      </button>
+    </ng-template>
+  </mat-menu>
+</div>

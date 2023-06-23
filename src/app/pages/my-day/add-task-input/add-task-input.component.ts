@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 
-import { PageTitles } from '@/models/navLabel';
-import { ITask } from '@/models/task';
+import { DEFAULT_FOLDER, Task } from '@/models/task';
 import { TaskService } from '@/services/tasks/task.service';
-import { slugToTitle } from '@/utils/trakzUtils';
+import { slugToTitle, taskGeneratedId } from '@/utils/trakzUtils';
 
 @Component({
   selector: 'app-add-task-input',
@@ -18,8 +17,8 @@ export class AddTaskInputComponent implements OnInit {
 
   constructor(private _taskService: TaskService, private _router: Router) {}
 
-  private static scrollInToNewAddedTask(createdTask: ITask) {
-    const taskHTMLId = TaskService.taskGeneratedId(createdTask);
+  private static scrollInToNewAddedTask(createdTask: Task) {
+    const taskHTMLId = taskGeneratedId(createdTask);
     const taskElement = document.getElementById(taskHTMLId);
     if (taskElement) {
       taskElement.scrollIntoView({ behavior: 'smooth' });
@@ -51,21 +50,25 @@ export class AddTaskInputComponent implements OnInit {
     });
   }
 
-  onEnterInput(taskInput: HTMLInputElement) {
+  onSaveNewTask(taskInput: HTMLInputElement) {
     if (!taskInput.value.trim().length) {
       return;
     }
-    const createdTask = this._taskService.createTask({
-      text: taskInput.value,
-      parent: this.parentFolder,
-      isInMyDay: this.parentFolder === PageTitles.MyDay,
-    });
-    // eslint-disable-next-line no-param-reassign
-    taskInput.value = '';
-    this._taskService.addTask(createdTask);
-    // scroll to the task that was just added to the list of tasks in the DOM
-    setTimeout(() => {
-      AddTaskInputComponent.scrollInToNewAddedTask(createdTask);
-    }, 0);
+
+    this._taskService
+      .addNewTask({
+        content: taskInput.value,
+        folderName: this.parentFolder,
+        isInMyDay: this.parentFolder === DEFAULT_FOLDER.MyDay,
+        isImportant: this.parentFolder === DEFAULT_FOLDER.Important,
+      })
+      .subscribe((task) => {
+        // eslint-disable-next-line no-param-reassign
+        taskInput.value = '';
+        // scroll to the task that was just added to the list of tasks in the DOM
+        setTimeout(() => {
+          AddTaskInputComponent.scrollInToNewAddedTask(task);
+        }, 0);
+      });
   }
 }

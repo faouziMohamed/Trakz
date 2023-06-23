@@ -16,6 +16,10 @@
     [ngClass]="{ hidden: accordionItem.expanded }"
     class="flex flex-col w-full gap-1"
   >
-    <app-task-row *ngFor="let task of tasks" [task]="task"></app-task-row>
+    <app-task-row
+      *ngFor="let task of tasks"
+      [folderName]="folderName"
+      [task]="task"
+    ></app-task-row>
   </div>
 </section>

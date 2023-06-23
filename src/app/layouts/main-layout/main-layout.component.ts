@@ -4,24 +4,26 @@ import { NavigationEnd, Router } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
 
-import { PageTitles } from '@/app/models/navLabel';
+import { PageTitles, pageTitles } from '@/app/models/navLabel';
 import { IUser } from '@/models/User';
 import { TaskService } from '@/services/tasks/task.service';
 import { slugToTitle } from '@/utils/trakzUtils';
 
 const bgImages = {
-  [PageTitles.MyDay]: 'bg-light-my-day darks:bg-dark-my-day',
-  [PageTitles.Tasks]: 'bg-light-tasks darks:bg-dark-tasks',
-  [PageTitles.Projects]: 'bg-light-projects darks:bg-dark-projects',
-  [PageTitles.Planned]: 'bg-light-planned darks:bg-dark-planned',
-  [PageTitles.Important]: 'bg-light-important darks:bg-dark-important',
-  [PageTitles.Home]: '',
+  [pageTitles.MyDay]: 'bg-light-my-day darks:bg-dark-my-day',
+  [pageTitles.Tasks]: 'bg-light-tasks darks:bg-dark-tasks',
+  [pageTitles.Projects]: 'bg-light-projects darks:bg-dark-projects',
+  [pageTitles.Planned]: 'bg-light-planned darks:bg-dark-planned',
+  [pageTitles.Important]: 'bg-light-important darks:bg-dark-important',
+  [pageTitles.Home]: '',
 };
+
 function getBgImage(page: PageTitles) {
-  return bgImages[page] || bgImages[PageTitles.Home];
+  return bgImages[page] || bgImages[pageTitles.Home];
 }
+
 function getPageTitle(page: PageTitles) {
-  if (page === PageTitles.Home || !(page in PageTitles))
+  if (page === pageTitles.Home || !(page in pageTitles))
     return 'Trakz - Your the only task manager you need';
   return `${page} | Trakz`;
 }
@@ -36,7 +38,7 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
 
   isSmallScreen: Observable<boolean> | undefined;
 
-  activePage: PageTitles = PageTitles.MyDay;
+  activePage: PageTitles = pageTitles.MyDay;
 
   currentDate: Date | undefined;
 
@@ -93,7 +95,7 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
   }
 
   handleCloseRightSideNav() {
-    this._taskDataService.setSelection(null);
+    this._taskDataService.setSelectedTask(null);
   }
 
   ngOnDestroy(): void {

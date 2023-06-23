@@ -1,7 +1,7 @@
 import { CdkAccordionItem } from '@angular/cdk/accordion';
 import { Component, Input } from '@angular/core';
 
-import { ITask } from '@/models/task';
+import { Task } from '@/models/task';
 
 @Component({
   selector: 'app-task-group-list',
@@ -9,11 +9,13 @@ import { ITask } from '@/models/task';
   styleUrls: ['./task-group-list.component.scss'],
 })
 export class TaskGroupListComponent {
-  @Input() tasks: ITask[] = [];
+  @Input() tasks: Task[] = [];
 
   @Input() open = true;
 
   @Input() title = '';
+
+  @Input() folderName = '';
 
   @Input() accordionItem!: CdkAccordionItem;
 }
