@@ -4,7 +4,7 @@ import { BehaviorSubject } from 'rxjs';
 import { INavLink, pageTitles } from '@/models/navLabel';
 import { TaskService } from '@/services/tasks/task.service';
 
-const NAV_LINKS: INavLink[] = [
+const DEFAULT_FOLDERS: INavLink[] = [
   { label: pageTitles.MyDay, link: '/my-day', icon: 'wb_sunny', count: 0 },
   { label: pageTitles.Important, link: '/important', icon: 'star', count: 0 },
   {
@@ -20,14 +20,16 @@ const NAV_LINKS: INavLink[] = [
   providedIn: 'root',
 })
 export class FoldersService {
-  folders = new BehaviorSubject<INavLink[]>(NAV_LINKS);
+  folders = new BehaviorSubject<INavLink[]>(DEFAULT_FOLDERS);
 
   constructor(private _tasksService: TaskService) {
-    NAV_LINKS.forEach((link) => {
-      this._tasksService.countTasksObservable(link.label).subscribe((count) => {
-        // eslint-disable-next-line no-param-reassign
-        link.count = count;
-      });
+    DEFAULT_FOLDERS.forEach((link) => {
+      this._tasksService //
+        .countTasksObservable(link.label) //
+        .subscribe((count) => {
+          // eslint-disable-next-line no-param-reassign
+          link.count = count;
+        });
     });
   }
 

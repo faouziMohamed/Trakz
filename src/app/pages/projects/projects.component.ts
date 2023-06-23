@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 import { pageTitles } from '@/models/navLabel';
-import { ITask } from '@/models/task';
+import { Task, TaskStatus } from '@/models/task';
 import { TaskService } from '@/services/tasks/task.service';
 
 @Component({
@@ -10,13 +10,33 @@ import { TaskService } from '@/services/tasks/task.service';
   styleUrls: ['./projects.component.scss'],
 })
 export class ProjectsComponent implements OnInit {
-  tasks: ITask[] = [];
+  tasks: Task[] = [];
 
-  constructor(private tasksData: TaskService) {}
+  tasksData: Record<TaskStatus, Task[]> = {} as Record<TaskStatus, Task[]>;
+
+  folderName = '';
+
+  toFilter = [TaskStatus.uncompleted, TaskStatus.completed];
+
+  constructor(private _tasksService: TaskService) {}
 
   ngOnInit(): void {
-    this.tasksData.getTaskByFolder(pageTitles.Projects).subscribe((tasks) => {
-      this.tasks = tasks;
+    const filtered = this._tasksService.getTasksByStatus(
+      this.toFilter,
+      pageTitles.Projects,
+    );
+    this.toFilter.forEach((status) => {
+      filtered[status].subscribe((tasksWithFolder) => {
+        this.tasksData[status] = tasksWithFolder.tasks;
+      });
     });
+  }
+
+  getUncompleted() {
+    return this.tasksData[TaskStatus.uncompleted];
+  }
+
+  getCompleted() {
+    return this.tasksData[TaskStatus.completed];
   }
 }

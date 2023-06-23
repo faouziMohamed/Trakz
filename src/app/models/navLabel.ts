@@ -1,10 +1,12 @@
 // export type pageTitles = keyof typeof PageTitles;
+import { DEFAULT_FOLDER } from '@/models/task';
+
 export const pageTitles = {
-  MyDay: 'My Day',
-  Important: 'Important',
-  Planned: 'Planned',
-  Tasks: 'Tasks',
-  Projects: 'Projects',
+  MyDay: DEFAULT_FOLDER.MyDay,
+  Important: DEFAULT_FOLDER.Important,
+  Planned: DEFAULT_FOLDER.Planned,
+  Tasks: DEFAULT_FOLDER.Tasks,
+  Projects: DEFAULT_FOLDER.Projects,
   Home: '',
 } as const;
 

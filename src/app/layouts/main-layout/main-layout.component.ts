@@ -95,7 +95,7 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
   }
 
   handleCloseRightSideNav() {
-    this._taskDataService.setSelection(null);
+    this._taskDataService.setSelectedTask(null);
   }
 
   ngOnDestroy(): void {

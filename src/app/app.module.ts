@@ -1,8 +1,10 @@
 import { CdkAccordionModule } from '@angular/cdk/accordion';
 import { LayoutModule } from '@angular/cdk/layout';
 import { DatePipe, NgOptimizedImage } from '@angular/common';
+import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
+import { MatLineModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatSidenavModule } from '@angular/material/sidenav';
@@ -16,17 +18,17 @@ import { UserAvatarComponent } from '@/components/user-avatar/user-avatar.compon
 
 import { AppComponent } from '@/app/app.component';
 import { AppRoutingModule } from '@/app/app-routing.module';
-import { LeftSidebarComponent } from '@/layouts/main-layout/left-side-nav/left-sidebar.component';
-import { LeftSidebarItemComponent } from '@/layouts/main-layout/left-side-nav/left-sidebar-item/left-sidebar-item.component';
+import { LeftSidebarComponent } from '@/layouts/main-layout/left-sidebar/left-sidebar.component';
+import { LeftSidebarItemComponent } from '@/layouts/main-layout/left-sidebar/left-sidebar-item/left-sidebar-item.component';
 import { MainLayoutComponent } from '@/layouts/main-layout/main-layout.component';
-import { AddStepInputComponent } from '@/layouts/main-layout/right-side-nav/add-step-input/add-step-input.component';
-import { ConfirmDeleteDialogComponent } from '@/layouts/main-layout/right-side-nav/delete-task/confirm-delete-dialog/confirm-delete-dialog.component';
-import { DeleteTaskComponent } from '@/layouts/main-layout/right-side-nav/delete-task/delete-task.component';
-import { OpenedTaskComponent } from '@/layouts/main-layout/right-side-nav/oppened-task/opened-task.component';
-import { RightSidebarComponent } from '@/layouts/main-layout/right-side-nav/right-sidebar.component';
-import { TaskDetailComponent } from '@/layouts/main-layout/right-side-nav/task-detail/task-detail.component';
-import { TaskNoteComponent } from '@/layouts/main-layout/right-side-nav/task-note/task-note.component';
-import { TaskStepComponent } from '@/layouts/main-layout/right-side-nav/task-step/task-step.component';
+import { AddStepInputComponent } from '@/layouts/main-layout/right-sidebar/add-step-input/add-step-input.component';
+import { ConfirmDeleteDialogComponent } from '@/layouts/main-layout/right-sidebar/delete-task/confirm-delete-dialog/confirm-delete-dialog.component';
+import { DeleteTaskComponent } from '@/layouts/main-layout/right-sidebar/delete-task/delete-task.component';
+import { OpenedTaskComponent } from '@/layouts/main-layout/right-sidebar/oppened-task/opened-task.component';
+import { RightSidebarComponent } from '@/layouts/main-layout/right-sidebar/right-sidebar.component';
+import { TaskDetailComponent } from '@/layouts/main-layout/right-sidebar/task-detail/task-detail.component';
+import { TaskNoteComponent } from '@/layouts/main-layout/right-sidebar/task-note/task-note.component';
+import { TaskStepComponent } from '@/layouts/main-layout/right-sidebar/task-step/task-step.component';
 import { TopNavbarComponent } from '@/layouts/main-layout/top-navbar/top-navbar.component';
 import { MaterialModule } from '@/modules/material/material.module';
 import { HomeComponent } from '@/pages/home/home.component';
@@ -89,6 +91,8 @@ import { TaskGroupListComponent } from './pages/tasks/task-group-list/task-group
     MatListModule,
     CdkAccordionModule,
     NgOptimizedImage,
+    HttpClientModule,
+    MatLineModule,
   ],
   providers: [DatePipe],
   bootstrap: [AppComponent],

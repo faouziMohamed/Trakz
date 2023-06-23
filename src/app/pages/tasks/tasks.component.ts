@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 
 import { pageTitles } from '@/models/navLabel';
-import { ITask, TaskStatus } from '@/models/task';
-import { FilteredByStatus, TaskService } from '@/services/tasks/task.service';
+import { DEFAULT_FOLDER, Task, TaskStatus } from '@/models/task';
+import { TaskService } from '@/services/tasks/task.service';
 
 @Component({
   selector: 'app-tasks',
@@ -10,27 +10,24 @@ import { FilteredByStatus, TaskService } from '@/services/tasks/task.service';
   styleUrls: ['./tasks.component.scss'],
 })
 export class TasksComponent implements OnInit {
-  tasks: ITask[] = [];
+  tasks: Task[] = [];
 
-  tasksData: Record<TaskStatus, ITask[]> = {} as Record<TaskStatus, ITask[]>;
+  tasksData: Record<TaskStatus, Task[]> = {} as Record<TaskStatus, Task[]>;
 
   toFilter = [TaskStatus.uncompleted, TaskStatus.completed];
+
+  folderName = DEFAULT_FOLDER.Tasks;
 
   constructor(private _tasksService: TaskService) {}
 
   ngOnInit(): void {
-    this._tasksService.getTasks().subscribe((tasks) => {
-      this.tasks = tasks;
-    });
-
     const filtered = this._tasksService.getTasksByStatus(
       this.toFilter,
       pageTitles.Tasks,
-    ) as FilteredByStatus;
-
+    );
     this.toFilter.forEach((status) => {
-      filtered[status].subscribe((tasks) => {
-        this.tasksData[status] = tasks;
+      filtered[status].subscribe((tasksWithFolder) => {
+        this.tasksData[status] = tasksWithFolder.tasks;
       });
     });
   }

@@ -1,0 +1,192 @@
+<div
+  *ngIf="task"
+  class="flex overflow-hidden gap-2 flex-col h-full w-full justify-between"
+>
+  <div class="overflow-hidden flex flex-col gap-2 w-full">
+    <div class="flex pt-1 items-center justify-end">
+      <button
+        (click)="onRightSidebarClose()"
+        class="!text-[0.98rem] text-gray-500"
+        mat-icon-button
+      >
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+
+    <div class="overflow-y-auto flex px-1 flex-col gap-2">
+      <div class="!flex border-gray-300 py-1 rounded border !flex-col">
+        <app-opened-task
+          (contentChanged)="onTaskContentChange($event)"
+          (toggleTaskIsComplete)="onToggleTaskIsCompleted($event)"
+          (toggleTaskIsImportant)="onToggleTaskIsImportant($event)"
+          [task]="task"
+        ></app-opened-task>
+        <div class="py-2 w-full">
+          <ng-container *ngFor="let step of task.steps; let i = index">
+            <app-task-step
+              (contentChange)="onStepContentChange($event)"
+              (promoteStepToTask)="onPromoteStepToTask($event)"
+              (removeStep)="onRemoveStep($event)"
+              (toggleStepIsComplete)="onToggleStepComplete($event)"
+              [step]="step"
+            ></app-task-step>
+            <div *ngIf="i < task.steps.length - 1" class="!px-5 w-full">
+              <mat-divider class="opacity-30"></mat-divider>
+            </div>
+          </ng-container>
+          <app-add-step-input (addStep)="addStep($event)"></app-add-step-input>
+        </div>
+      </div>
+      <div
+        *ngIf="task"
+        class="bg-inherit !flex border-gray-300 rounded border !flex-col"
+      >
+        <app-task-detail
+          [iconClasses]="
+            task.isInMyDay
+              ? 'text-cyan-700 hover:text-cyan-800'
+              : 'text-gray-500 hover:text-gray-500'
+          "
+          [onClick]="toggleIsInMyDay()"
+          [textClasses]="
+            task.isInMyDay
+              ? 'text-cyan-700 hover:text-cyan-800'
+              : 'text-gray-500 hover:text-gray-500'
+          "
+          iconName="sunny"
+          text="{{ task.isInMyDay ? 'Added to My Day' : 'Add to My Day' }}"
+        >
+        </app-task-detail>
+      </div>
+
+      <!-- Due date and occurrence management     -->
+      <div class="bg-inherit !flex border-gray-300 rounded border !flex-col">
+        <app-task-detail
+          [iconClasses]="getTaskDueDateClasses(task.dueDate)"
+          [matMenuTriggerFor]="dueDateMenu"
+          [textClasses]="getTaskDueDateClasses(task.dueDate)"
+          iconName="event_note"
+          text="{{ task.dueDate ? formatDate(task.dueDate) : 'Add due date' }}"
+        >
+        </app-task-detail>
+        <mat-divider class="opacity-30"></mat-divider>
+        <app-task-detail
+          [iconClasses]="getTaskDueDateClasses(task.dueDate, true)"
+          [matMenuTriggerFor]="recurrenceMenu"
+          [textClasses]="getTaskDueDateClasses(task.dueDate, true)"
+          [text]="
+            task.recurrence
+              ? capitalizeFirstLetterOfEachWord(
+                  getTaskRecurrence(task.recurrence)
+                )
+              : 'Repeat'
+          "
+          iconName="event_repeat"
+        >
+        </app-task-detail>
+      </div>
+      <app-task-note [note]="task.note"></app-task-note>
+    </div>
+  </div>
+  <div
+    class="py-1 bg-gray-300 bg-opacity-25 border-t border-t-gray-300 text-gray-600"
+  >
+    <app-delete-task
+      (deleteTask)="onDeleteTask($event)"
+      [task]="task"
+    ></app-delete-task>
+  </div>
+</div>
+
+<!--DUe date Menu-->
+<mat-menu
+  #dueDateMenu="matMenu"
+  class="!py-0 !min-w-[11.25rem] task-due-date-menu"
+  id="due-date-menu"
+>
+  <ng-template matMenuContent>
+    <button
+      (click)="setToDayAsDueDate()"
+      class="!text-[0.8rem] !flex items-center"
+      mat-menu-item
+    >
+      <mat-icon class="text-[1rem] !h-[1rem]">calendar_today</mat-icon>
+      <span class="grow w-full"> Today </span>
+      <span class="pl-4 text-[0.88rem] text-gray-500">
+        {{ dayFromToday('today') }}
+      </span>
+    </button>
+    <button
+      (click)="setToTomorrowAsDueDate()"
+      class="!text-[0.8rem] !flex items-center"
+      mat-menu-item
+    >
+      <mat-icon class="text-[1rem] !h-[1rem]">event</mat-icon>
+      <span class="grow w-full"> Tomorrow </span>
+      <span class="pl-4 text-[0.88rem] text-gray-500">
+        {{ dayFromToday('tomorrow') }}
+      </span>
+    </button>
+    <button
+      (click)="setNextMondayAsDueDate()"
+      class="!text-[0.8rem] !flex items-center"
+      mat-menu-item
+    >
+      <mat-icon class="text-[1rem] !h-[1rem]">event_busy</mat-icon>
+      <span class="grow w-full"> Next week </span>
+      <span class="pl-4 text-[0.88rem] text-gray-500">
+        {{ dayFromToday('next week') }}
+      </span>
+    </button>
+  </ng-template>
+</mat-menu>
+
+<!--Recurrence Menu-->
+<mat-menu
+  #recurrenceMenu="matMenu"
+  class="!py-0 !min-w-[11.25rem] task-due-date-menu"
+  id="recurrence-menu"
+>
+  <ng-template matMenuContent>
+    <button
+      (click)="setRecurrence('DAILY')"
+      class="!text-[0.8rem] !flex items-center"
+      mat-menu-item
+    >
+      <mat-icon class="text-[1rem] !h-[1rem]">event_note</mat-icon>
+      <span class="grow w-full"> Daily </span>
+    </button>
+    <button
+      (click)="setRecurrence('WEEKDAYS')"
+      class="!text-[0.8rem] !flex items-center"
+      mat-menu-item
+    >
+      <mat-icon class="text-[1rem] !h-[1rem]">event_note</mat-icon>
+      <span class="grow w-full"> Weekdays </span>
+    </button>
+    <button
+      (click)="setRecurrence('WEEKLY')"
+      class="!text-[0.8rem] !flex items-center"
+      mat-menu-item
+    >
+      <mat-icon class="text-[1rem] !h-[1rem]">event_note</mat-icon>
+      <span class="grow w-full"> Weekly </span>
+    </button>
+    <button
+      (click)="setRecurrence('MONTHLY')"
+      class="!text-[0.8rem] !flex items-center"
+      mat-menu-item
+    >
+      <mat-icon class="text-[1rem] !h-[1rem]">event_note</mat-icon>
+      <span class="grow w-full"> Monthly </span>
+    </button>
+    <button
+      (click)="setRecurrence('YEARLY')"
+      class="!text-[0.8rem] !flex items-center"
+      mat-menu-item
+    >
+      <mat-icon class="text-[1rem] !h-[1rem]">event_note</mat-icon>
+      <span class="grow w-full"> Yearly </span>
+    </button>
+  </ng-template>
+</mat-menu>

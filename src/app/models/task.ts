@@ -2,43 +2,52 @@ export interface CustomRecurrence {
   every: number;
   unit: 'day' | 'days' | 'week' | 'month' | 'year';
 }
-export interface ITimeStampsDate {
+export type Recurrence =
+  | 'DAILY'
+  | 'WEEKDAYS'
+  | 'WEEKLY'
+  | 'MONTHLY'
+  | 'YEARLY'
+  | 'ONCE'
+  | CustomRecurrence;
+
+export interface TimeStampsDate {
   createdAt: Date;
   updatedAt: Date;
 }
 
-export interface TaskStep extends ITimeStampsDate {
+export interface TaskStep extends TimeStampsDate {
   id: number;
-  text: string;
+  content: string;
   isCompleted: boolean;
+  taskId: number;
 }
 
-export type Recurrence =
-  | 'daily'
-  | 'weekdays'
-  | 'weekly'
-  | 'monthly'
-  | 'yearly'
-  | 'once'
-  | CustomRecurrence;
-
-export interface ITaskNote {
-  text: string | '';
-  createdAt?: ITimeStampsDate['createdAt'];
-  updatedAt?: ITimeStampsDate['updatedAt'];
+export interface TaskNote {
+  content: string | '';
+  createdAt?: TimeStampsDate['createdAt'];
+  updatedAt?: TimeStampsDate['updatedAt'];
 }
 
-export interface ITask extends ITimeStampsDate {
+export interface Folder {
   id: number;
-  parent: string;
+  name: string;
+  description: string;
+  tasks?: Task[];
+}
+
+export interface Task extends TimeStampsDate {
+  id: number;
+  folderName: string;
+  // folder: Folder;
   dueDate?: Date;
-  text: string;
+  content: string;
   isInMyDay: boolean;
   isImportant: boolean;
   isCompleted: boolean;
   steps: TaskStep[];
-  recurrence: Recurrence;
-  note: ITaskNote;
+  recurrence?: Recurrence;
+  note?: TaskNote;
 }
 
 export enum TaskStatus {
@@ -48,4 +57,17 @@ export enum TaskStatus {
   later = 'later',
   completed = 'completed',
   uncompleted = 'uncompleted',
+}
+
+export const DEFAULT_FOLDER = {
+  MyDay: 'My Day',
+  Important: 'Important',
+  Planned: 'Planned',
+  Tasks: 'Tasks',
+  Projects: 'Projects',
+} as const;
+
+export interface TasksWithFolder {
+  folderName: string;
+  tasks: Task[];
 }

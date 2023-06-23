@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 
-import { ITask } from '@/models/task';
+import { Task } from '@/models/task';
 
 @Component({
   selector: 'app-task-text-card',
@@ -8,13 +8,13 @@ import { ITask } from '@/models/task';
   styleUrls: ['./task-text-card.component.scss'],
 })
 export class TaskTextCardComponent {
-  @Input() task: ITask | undefined;
+  @Input() task: Task | undefined;
 
   @Input() textClassName: string | undefined = '';
 
-  @Output() toggleTaskIsCompleted = new EventEmitter<ITask>();
+  @Output() toggleTaskIsCompleted = new EventEmitter<Task>();
 
-  @Output() toggleTaskIsImportant = new EventEmitter<ITask>();
+  @Output() toggleTaskIsImportant = new EventEmitter<Task>();
 
   hasMouseOver = false;
 
@@ -30,7 +30,7 @@ export class TaskTextCardComponent {
     this.hasMouseOut = true;
   }
 
-  showCompletedIcon(task: ITask) {
+  showCompletedIcon(task: Task) {
     if (task.isCompleted) {
       return 'check_circle';
     }
@@ -43,11 +43,11 @@ export class TaskTextCardComponent {
     return 'radio_button_unchecked';
   }
 
-  onClickCompleteButton(task: ITask) {
+  onClickCompleteButton(task: Task) {
     this.toggleTaskIsCompleted.emit(task);
   }
 
-  onClickImportantButton(task: ITask) {
+  onClickImportantButton(task: Task) {
     this.toggleTaskIsImportant.emit(task);
   }
 }

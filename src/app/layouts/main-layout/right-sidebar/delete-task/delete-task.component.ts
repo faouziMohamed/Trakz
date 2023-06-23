@@ -1,8 +1,8 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 
-import { ConfirmDeleteDialogComponent } from '@/layouts/main-layout/right-side-nav/delete-task/confirm-delete-dialog/confirm-delete-dialog.component';
-import { ITask } from '@/models/task';
+import { ConfirmDeleteDialogComponent } from '@/layouts/main-layout/right-sidebar/delete-task/confirm-delete-dialog/confirm-delete-dialog.component';
+import { Task } from '@/models/task';
 
 export interface DialogData {
   title: string;
@@ -16,25 +16,27 @@ export interface DialogData {
   styleUrls: ['./delete-task.component.scss'],
 })
 export class DeleteTaskComponent {
-  @Input() task: ITask | undefined;
+  @Input() task: Task | undefined;
 
-  @Output() deleteTask = new EventEmitter<ITask>();
+  @Output() deleteTask = new EventEmitter<Task>();
 
   constructor(private _dialog: MatDialog) {}
 
-  onClickDeleteButton(task: ITask) {
+  onClickDeleteButton(task: Task) {
     const dialogRef = this.openConfirmDialog(task);
     dialogRef.afterClosed().subscribe((result) => {
       if (result) this.deleteTask.emit(task);
     });
   }
 
-  private openConfirmDialog(task: ITask) {
+  private openConfirmDialog(task: Task) {
     const dialogConfig = new MatDialogConfig<DialogData>();
     dialogConfig.disableClose = true;
 
     const textTruncated =
-      task.text.length > 20 ? `${task.text.slice(0, 20)}...` : task.text;
+      task.content.length > 20
+        ? `${task.content.slice(0, 20)}...`
+        : task.content;
     dialogConfig.data = {
       title: 'Delete Task',
       message: `Are you sure you want to delete the task "${textTruncated}"?`,

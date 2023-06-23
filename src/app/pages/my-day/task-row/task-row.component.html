@@ -22,7 +22,7 @@
     </div>
 
     <div class="flex items-center text-[0.9rem] gap-1">
-      <span> {{ task.parent }} </span>
+      <span> {{ task.folderName || folderName }} </span>
       <span
         *ngIf="task.steps.length || task.dueDate"
         class="text-[1.3rem] text-gray-600"
@@ -66,14 +66,14 @@
     </div>
 
     <div
-      *ngIf="task.dueDate && task.recurrence !== 'once'"
+      *ngIf="task.dueDate && task.recurrence && task.recurrence !== 'ONCE'"
       class="flex items-center w-[0.89rem]"
     >
       <mat-icon class="flex items-center !h-[0.88rem] text-[0.99rem]">
         cached
       </mat-icon>
     </div>
-    <div *ngIf="task.note.text" class="flex w-[0.99rem] items-center">
+    <div *ngIf="task.note?.content" class="flex w-[0.99rem] items-center">
       <mat-icon class="flex items-center !h-[0.88rem] text-[0.99rem]">
         sticky_note_2
       </mat-icon>

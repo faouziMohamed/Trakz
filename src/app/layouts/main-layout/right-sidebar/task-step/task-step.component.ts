@@ -31,11 +31,35 @@ export class TaskStepComponent {
 
   @Output() toggleStepIsComplete = new EventEmitter<TaskStep['id']>();
 
+  @Output() contentChange = new EventEmitter<
+    Pick<TaskStep, 'content' | 'id'>
+  >();
+
   @ViewChild(MatMenuTrigger)
   stepMenu: MatMenuTrigger | undefined;
 
+  _editionStarted = false;
+
   constructor() {
     this.step = {} as TaskStep;
+  }
+
+  setEditionStarted(inputId: string | number) {
+    this._editionStarted = true;
+    setTimeout(() => {
+      const input = document.getElementById(
+        inputId.toString(),
+      ) as HTMLInputElement | null;
+      if (input) {
+        input.focus();
+        input.selectionStart = input.value.length;
+        input.selectionEnd = input.value.length;
+      }
+    }, 0);
+  }
+
+  setEditionEnded() {
+    this._editionStarted = false;
   }
 
   showCompletedIcon(step: TaskStep) {
@@ -78,5 +102,15 @@ export class TaskStepComponent {
     if (this.stepMenu) {
       this.stepMenu.openMenu();
     }
+  }
+
+  onStepEditionEnded($event: KeyboardEvent) {
+    // handle ctrl + enter to toggle step is complete
+    if ($event.key !== 'Enter') {
+      return;
+    }
+    $event.preventDefault();
+    const newContent = ($event.target as HTMLInputElement).value;
+    this.contentChange.emit({ content: newContent, id: this.step.id });
   }
 }

@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 
-import { ITaskNote } from '@/models/task';
+import { TaskNote } from '@/models/task';
 
 @Component({
   selector: 'app-task-note',
@@ -8,5 +8,5 @@ import { ITaskNote } from '@/models/task';
   styleUrls: ['./task-note.component.scss'],
 })
 export class TaskNoteComponent {
-  @Input() note: ITaskNote | undefined;
+  @Input() note: TaskNote | undefined;
 }

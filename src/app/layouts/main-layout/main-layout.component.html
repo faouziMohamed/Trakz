@@ -1,7 +1,7 @@
 <div class="flex justify-center absolute inset-0 bg-[#fafafa]">
   <mat-sidenav-container
     [ngClass]="bgImage && bgImage"
-    class="h-full w-full max-w-screen-2xl bg-cover bg-no-repeat bg-center bg-slate-100"
+    class="h-full w-full <!--max-w-screen-2xl --> bg-cover bg-no-repeat bg-center bg-slate-100"
   >
     <mat-sidenav
       #drawer
@@ -32,10 +32,10 @@
       <div
         class="relative h-full flex overflow-hidden basis-full justify-between flex-col"
       >
+        <app-add-task-input></app-add-task-input>
         <div class="overflow-y-auto grow basis-full">
           <ng-content></ng-content>
         </div>
-        <app-add-task-input></app-add-task-input>
       </div>
     </mat-sidenav-content>
     <mat-sidenav

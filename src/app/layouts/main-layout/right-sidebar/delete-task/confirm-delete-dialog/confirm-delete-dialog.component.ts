@@ -1,7 +1,7 @@
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
-import { DialogData } from '@/layouts/main-layout/right-side-nav/delete-task/delete-task.component';
+import { DialogData } from '@/layouts/main-layout/right-sidebar/delete-task/delete-task.component';
 
 @Component({
   selector: 'app-confirm-delete-dialog',

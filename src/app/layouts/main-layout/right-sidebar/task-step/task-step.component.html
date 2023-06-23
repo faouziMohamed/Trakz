@@ -3,7 +3,7 @@
   *ngIf="step"
   class="flex task-step pl-2 pt-1 bg-gray-300 bg-opacity-10 hover:bg-opacity-25 justify-between items-start"
 >
-  <div class="flex gap-1">
+  <div *ngIf="!_editionStarted" class="flex gap-1 w-full">
     <mat-icon
       (click)="emitToggleStepIsComplete(step)"
       (mouseout)="onMouseLeaveCompletedIcon()"
@@ -13,13 +13,42 @@
       {{ showCompletedIcon(step) }}
     </mat-icon>
     <p
+      (click)="setEditionStarted(step.id)"
       [ngClass]="{ '!line-through': step.isCompleted }"
-      class="!text-[0.8rem] focus-visible:outline-none decoration-2 !font-[Ubuntu] !m-0"
+      class="!text-[0.8rem] w-full focus-visible:outline-none decoration-2 !font-[Ubuntu] !m-0"
       contenteditable="true"
     >
-      {{ step.text }}
+      {{ step.content }}
     </p>
   </div>
+
+  <div *ngIf="_editionStarted" class="flex gap-1 w-full">
+    <div
+      (click)="taskInput.focus()"
+      (contextmenu)="$event.preventDefault()"
+      (keydown.enter)="setEditionEnded()"
+      class="w-full flex items-center rounded focus-within:bg-gray-100 focus-within:outline outline-2 outline-offset-2 text-sky-800"
+    >
+      <mat-icon
+        #inputIcon
+        (click)="emitToggleStepIsComplete(step)"
+        class="basis-auto pointer-events-none select-none shrink-0 !text-[0.98rem] !w-[0.98rem] !h-[0.99rem] flex items-center"
+      >
+        {{ showCompletedIcon(step) }}
+      </mat-icon>
+      <input
+        #taskInput
+        (blur)="setEditionEnded()"
+        (keydown)="onStepEditionEnded($event)"
+        [defaultValue]="step.content"
+        [id]="step.id"
+        class="placeholder-sky-700 focus-visible:outline-none w-full rounded py-1 bg-transparent px-1 !text-[0.8rem]"
+        placeholder="Next step"
+        type="text"
+      />
+    </div>
+  </div>
+
   <button
     [matMenuTriggerFor]="stepMenu"
     class="basis-auto shrink-0 !-mt-3 !flex items-center self-center"
@@ -45,7 +74,7 @@
         class="!text-[0.8rem] !flex items-center"
         mat-menu-item
       >
-        <mat-icon class="text-[0.8rem] !w-[0.8rem] !h-[0.8rem]"> add </mat-icon>
+        <mat-icon class="text-[0.8rem] !w-[0.8rem] !h-[0.8rem]"> add</mat-icon>
         <span>Promote to task</span>
       </button>
       <button
@@ -57,7 +86,7 @@
           delete
         </mat-icon>
         <span>Delete step</span>
-      </button></ng-template
-    >
+      </button>
+    </ng-template>
   </mat-menu>
 </div>
