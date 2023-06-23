@@ -28,3 +28,7 @@ body {
     @apply bg-black bg-opacity-30 absolute  inset-0 -z-10;
   }
 }
+
+.task-due-date-menu .mdc-list-item__primary-text {
+  @apply flex justify-between items-center w-full;
+}

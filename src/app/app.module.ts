@@ -1,8 +1,10 @@
 import { CdkAccordionModule } from '@angular/cdk/accordion';
 import { LayoutModule } from '@angular/cdk/layout';
-import { DatePipe } from '@angular/common';
+import { DatePipe, NgOptimizedImage } from '@angular/common';
+import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
+import { MatLineModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatSidenavModule } from '@angular/material/sidenav';
@@ -16,16 +18,17 @@ import { UserAvatarComponent } from '@/components/user-avatar/user-avatar.compon
 
 import { AppComponent } from '@/app/app.component';
 import { AppRoutingModule } from '@/app/app-routing.module';
-import { LeftSideNavComponent } from '@/layouts/main-layout/left-side-nav/left-side-nav.component';
+import { LeftSidebarComponent } from '@/layouts/main-layout/left-sidebar/left-sidebar.component';
+import { LeftSidebarItemComponent } from '@/layouts/main-layout/left-sidebar/left-sidebar-item/left-sidebar-item.component';
 import { MainLayoutComponent } from '@/layouts/main-layout/main-layout.component';
-import { AddStepInputComponent } from '@/layouts/main-layout/right-side-nav/add-step-input/add-step-input.component';
-import { ConfirmDeleteDialogComponent } from '@/layouts/main-layout/right-side-nav/delete-task/confirm-delete-dialog/confirm-delete-dialog.component';
-import { DeleteTaskComponent } from '@/layouts/main-layout/right-side-nav/delete-task/delete-task.component';
-import { OpenedTaskComponent } from '@/layouts/main-layout/right-side-nav/oppened-task/opened-task.component';
-import { RightSideNavComponent } from '@/layouts/main-layout/right-side-nav/right-side-nav.component';
-import { TaskDetailComponent } from '@/layouts/main-layout/right-side-nav/task-detail/task-detail.component';
-import { TaskNoteComponent } from '@/layouts/main-layout/right-side-nav/task-note/task-note.component';
-import { TaskStepComponent } from '@/layouts/main-layout/right-side-nav/task-step/task-step.component';
+import { AddStepInputComponent } from '@/layouts/main-layout/right-sidebar/add-step-input/add-step-input.component';
+import { ConfirmDeleteDialogComponent } from '@/layouts/main-layout/right-sidebar/delete-task/confirm-delete-dialog/confirm-delete-dialog.component';
+import { DeleteTaskComponent } from '@/layouts/main-layout/right-sidebar/delete-task/delete-task.component';
+import { OpenedTaskComponent } from '@/layouts/main-layout/right-sidebar/oppened-task/opened-task.component';
+import { RightSidebarComponent } from '@/layouts/main-layout/right-sidebar/right-sidebar.component';
+import { TaskDetailComponent } from '@/layouts/main-layout/right-sidebar/task-detail/task-detail.component';
+import { TaskNoteComponent } from '@/layouts/main-layout/right-sidebar/task-note/task-note.component';
+import { TaskStepComponent } from '@/layouts/main-layout/right-sidebar/task-step/task-step.component';
 import { TopNavbarComponent } from '@/layouts/main-layout/top-navbar/top-navbar.component';
 import { MaterialModule } from '@/modules/material/material.module';
 import { HomeComponent } from '@/pages/home/home.component';
@@ -40,7 +43,6 @@ import { PlannedComponent } from '@/pages/planned/planned.component';
 import { ProjectsComponent } from '@/pages/projects/projects.component';
 import { TasksComponent } from '@/pages/tasks/tasks.component';
 
-import { NavListItemComponent } from './layouts/main-layout/left-side-nav/nav-list-item/nav-list-item.component';
 import { TrakzNotificationComponent } from './layouts/main-layout/top-navbar/trakz-notification/trakz-notification.component';
 import { TaskGroupListComponent } from './pages/tasks/task-group-list/task-group-list.component';
 
@@ -61,9 +63,9 @@ import { TaskGroupListComponent } from './pages/tasks/task-group-list/task-group
     EmptyMyDayHandleComponent,
     AddTaskInputComponent,
     TaskRowComponent,
-    LeftSideNavComponent,
+    LeftSidebarComponent,
     TopNavbarComponent,
-    RightSideNavComponent,
+    RightSidebarComponent,
     TaskTextCardComponent,
     AddStepInputComponent,
     TaskStepComponent,
@@ -72,7 +74,7 @@ import { TaskGroupListComponent } from './pages/tasks/task-group-list/task-group
     TaskNoteComponent,
     DeleteTaskComponent,
     ConfirmDeleteDialogComponent,
-    NavListItemComponent,
+    LeftSidebarItemComponent,
     TrakzNotificationComponent,
     TaskGroupListComponent,
   ],
@@ -88,6 +90,9 @@ import { TaskGroupListComponent } from './pages/tasks/task-group-list/task-group
     MatIconModule,
     MatListModule,
     CdkAccordionModule,
+    NgOptimizedImage,
+    HttpClientModule,
+    MatLineModule,
   ],
   providers: [DatePipe],
   bootstrap: [AppComponent],

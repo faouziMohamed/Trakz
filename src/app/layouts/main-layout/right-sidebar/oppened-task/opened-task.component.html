@@ -1,0 +1,60 @@
+<div *ngIf="task" class="overflow-auto flex justify-start relative w-full">
+  <div
+    *ngIf="!_editionStarted"
+    class="flex grow items-start rounded py-1 px-1 text-gray-800"
+  >
+    <mat-icon
+      (click)="emitToggleTaskIsComplete()"
+      class="basis-auto shrink-0 pt-[0.15rem] z-10 -mt-0.5 !text-[1.3rem] !w-[1.3rem] !h-auto flex items-center"
+    >
+      {{ task.isCompleted ? 'check_circle' : 'check_circle_outline' }}
+    </mat-icon>
+    <p
+      (click)="setEditionStarted(task.id)"
+      [ngClass]="{ 'line-through': task.isCompleted }"
+      class="focus-visible:outline-none w-full rounded bg-transparent px-1 text-[1rem] !font-[500] !font-[Inter]"
+    >
+      {{ task.content }}
+    </p>
+  </div>
+
+  <!-- Edit input -->
+  <div
+    *ngIf="_editionStarted"
+    class="flex items-start px-1 grow py-1 gap-1 w-full"
+  >
+    <div
+      (click)="taskInput.focus()"
+      (contextmenu)="$event.preventDefault()"
+      (keydown.enter)="setEditionEnded()"
+      class="w-full flex items-center rounded focus-within:bg-gray-100 focus-within:outline outline-2 outline-offset-2 text-sky-800"
+    >
+      <mat-icon
+        (click)="emitToggleTaskIsComplete()"
+        class="basis-auto shrink-0 pt-[0.15rem] z-10 -mt-0.5 !text-[1.3rem] !w-[1.3rem] !h-auto flex items-center"
+      >
+        {{ task.isCompleted ? 'check_circle' : 'check_circle_outline' }}
+      </mat-icon>
+      <input
+        #taskInput
+        (blur)="setEditionEnded()"
+        (keydown)="onTaskEditionEnded($event)"
+        [defaultValue]="task.content"
+        [id]="task.id"
+        class="placeholder-sky-700 focus-visible:outline-none w-full rounded bg-transparent px-1 text-[1rem] !font-[500] !font-[Inter]"
+        placeholder="Next step"
+        type="text"
+      />
+    </div>
+  </div>
+
+  <button
+    (click)="emitToggleTaskIsImportant()"
+    class="basis-auto shrink-0 -mt-2"
+    mat-icon-button
+  >
+    <mat-icon class="!text-[1.2rem]">
+      {{ task.isImportant ? 'star' : 'star_border' }}
+    </mat-icon>
+  </button>
+</div>
