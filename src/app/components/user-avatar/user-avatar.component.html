@@ -1,13 +1,15 @@
-<div class="flex gap-3 items-center">
+<div class="flex gap-3 items-center py-0.5">
   <img
     [alt]="name"
-    [src]="picture"
-    class="w-10 h-10 rounded-full"
+    [ngSrc]="picture!"
+    class="w-12 h-12 rounded-full"
+    height="50"
     loading="lazy"
+    width="50"
   />
-  <div class="flex flex-col justify-center p-0 m-0 gap-0">
-    <p class="text-sm font-[500] !m-0">{{ name }}</p>
-    <p class="text-[0.78rem] font-[300] text-gray-400 !m-0">
+  <div class="flex flex-col font-inter justify-center p-0 m-0 gap-0">
+    <p class="text-[1.1rem] font-[500] !m-0">{{ name }}</p>
+    <p class="text-[1.05rem] font-[400] text-gray-500 !m-0">
       {{ email }}
     </p>
   </div>

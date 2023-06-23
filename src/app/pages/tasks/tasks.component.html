@@ -2,10 +2,7 @@
   [ngClass]="{ 'justify-center items-center': !tasks.length }"
   class="flex flex-col gap-2 !pt-4"
 >
-  <cdk-accordion
-    class="flex w-full flex-col gap-8 px-3 2xs:px-8 xs:px-5"
-    multi="true"
-  >
+  <cdk-accordion class="flex w-full flex-col gap-8 px-3" multi="true">
     <cdk-accordion-item
       #uncompletedAccordion="cdkAccordionItem"
       [attr.aria-controls]="'accordion-body-Uncompleted'"
@@ -15,6 +12,7 @@
     >
       <app-task-group-list
         [accordionItem]="uncompletedAccordion"
+        [folderName]="folderName"
         [tasks]="getUncompleted()"
         title="Uncompleted"
       >
@@ -30,6 +28,7 @@
     >
       <app-task-group-list
         [accordionItem]="completedAccordion"
+        [folderName]="folderName"
         [tasks]="getCompleted()"
         title="Completed"
       >

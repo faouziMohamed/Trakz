@@ -30,7 +30,7 @@
     "importHelpers": true,
     "target": "es2022",
     "module": "es2022",
-    "lib": ["es2021.intl", "dom"]
+    "lib": ["es2021.intl", "ESNext.Intl", "dom"]
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,

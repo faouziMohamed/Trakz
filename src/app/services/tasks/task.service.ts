@@ -1,182 +1,60 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { BehaviorSubject, map, Observable, Subject } from 'rxjs';
-import { fromPromise } from 'rxjs/internal/observable/innerFrom';
+import { NavigationEnd, Router } from '@angular/router';
+import {
+  BehaviorSubject,
+  catchError,
+  map,
+  Observable,
+  of,
+  Subject,
+  throwError,
+} from 'rxjs';
 
+import { CustomResponse } from '@/models/dto/custom-response';
 import { PageTitles } from '@/models/navLabel';
 import {
-  ITask,
-  ITaskNote,
-  ITaskStep,
+  DEFAULT_FOLDER,
+  Folder,
+  Recurrence,
+  Task,
+  TaskNote,
   TaskStatus,
-  TRecurrence,
+  TaskStep,
+  TasksWithFolder,
 } from '@/models/task';
-import { createHash, isToday, isTomorrow } from '@/utils/trakzUtils';
-
-const TASKS: ITask[] = [
-  {
-    id: 1,
-    text: 'Pay bills',
-    dueDate: new Date('2022-12-01T15:00:00.000Z'),
-    createdAt: new Date('2021-11-22T15:00:00.000Z'),
-    updatedAt: new Date('2021-11-22T15:00:00.000Z'),
-    isCompleted: true,
-    parent: 'Tasks',
-    isInMyDay: true,
-    isImportant: false,
-    steps: [
-      {
-        id: 1,
-        text: 'Run to the bank',
-        isCompleted: true,
-        createdAt: new Date('2021-11-22T15:00:00.000Z'),
-        updatedAt: new Date('2021-11-22T15:00:00.000Z'),
-      },
-      {
-        id: 2,
-        text: 'Pay the bill',
-        isCompleted: false,
-        createdAt: new Date('2021-11-22T15:00:00.000Z'),
-        updatedAt: new Date('2021-11-22T15:00:00.000Z'),
-      },
-      {
-        id: 3,
-        text: 'Run back home',
-        isCompleted: false,
-        createdAt: new Date('2021-11-22T15:00:00.000Z'),
-        updatedAt: new Date('2021-11-22T15:00:00.000Z'),
-      },
-    ],
-    recurrence: 'once',
-    note: {
-      text: '',
-      createdAt: new Date('2021-11-22T15:00:00.000Z'),
-      updatedAt: new Date('2021-11-22T15:00:00.000Z'),
-    },
-  },
-  {
-    id: 2,
-    text: 'Go to the gym',
-    dueDate: new Date('2021-07-09T00:00:00.000Z'),
-    createdAt: new Date('2021-05-09T00:00:00.000Z'),
-    updatedAt: new Date('2021-05-09T00:00:00.000Z'),
-    isCompleted: false,
-    parent: 'Tasks',
-    isInMyDay: false,
-    isImportant: true,
-    steps: [],
-    recurrence: 'daily',
-    note: {
-      text: "Don't forget to bring your towel",
-      createdAt: new Date('2021-11-09T00:00:00.000Z'),
-      updatedAt: new Date('2021-11-09T00:00:00.000Z'),
-    },
-  },
-  {
-    id: 3,
-    text: "Finish all today's todo by 7 pm and all of the unfinished business should end before december 1st",
-    dueDate: new Date('2021-07-01T15:00:00.000Z'),
-    createdAt: new Date('2021-05-01T15:00:00.000Z'),
-    updatedAt: new Date('2021-05-01T15:00:00.000Z'),
-    isCompleted: false,
-    parent: 'Tasks',
-    isInMyDay: true,
-    isImportant: false,
-    steps: [
-      {
-        id: 1,
-        text: 'Run to the bank',
-        isCompleted: true,
-        createdAt: new Date('2021-11-22T15:00:00.000Z'),
-        updatedAt: new Date('2021-11-22T15:00:00.000Z'),
-      },
-    ],
-    recurrence: 'once',
-    note: {
-      text: '',
-      createdAt: new Date('2021-11-22T15:00:00.000Z'),
-      updatedAt: new Date('2021-11-22T15:00:00.000Z'),
-    },
-  },
-  {
-    id: 4,
-    text: 'Buy groceries',
-    dueDate: new Date('2021-07-09T00:00:00.000Z'),
-    createdAt: new Date('2021-05-09T20:10:00.000Z'),
-    updatedAt: new Date('2021-05-09T20:10:00.000Z'),
-    isCompleted: true,
-    parent: 'Tasks',
-    isInMyDay: false,
-    isImportant: false,
-    steps: [],
-    recurrence: 'weekly',
-    note: {
-      text: 'Try to buy organic food and natural products',
-      createdAt: new Date('2021-07-09T00:00:00.000Z'),
-      updatedAt: new Date('2021-07-09T00:00:00.000Z'),
-    },
-  },
-  {
-    id: 5,
-    text: 'Buy groceries and try to get new shoes with a discount, when not possible, buy them at full price',
-    dueDate: new Date('2022-11-26T14:00:00.000Z'),
-    createdAt: new Date('2022-11-25T20:10:00.000Z'),
-    updatedAt: new Date('2022-11-25T20:10:00.000Z'),
-    isCompleted: false,
-    parent: 'Tasks',
-    isInMyDay: true,
-    isImportant: true,
-    steps: [],
-    recurrence: 'weekly',
-    note: {
-      text: 'Try to buy organic food and natural products',
-      createdAt: new Date('2021-07-09T00:00:00.000Z'),
-      updatedAt: new Date('2021-07-09T00:00:00.000Z'),
-    },
-  },
-];
+import {
+  createHash,
+  filterByStatusPredicate,
+  filterFolderPredicate,
+  getFlatTasks,
+  isFolderExists,
+  sortTasks,
+} from '@/utils/trakzUtils';
 
 export interface CreateTaskProps {
-  text: string;
-  parent?: string;
+  content: string;
+  folderName?: string;
   isInMyDay?: boolean;
   isImportant?: boolean;
-  steps?: ITaskStep[];
-  recurrence?: TRecurrence;
-  note?: ITaskNote;
+  steps?: TaskStep[];
+  recurrence?: Recurrence;
+  note?: TaskNote;
   dueDate?: Date;
 }
 
-function filterByStatusPredicate(status: TaskStatus) {
-  return (task: ITask) => {
-    if (status === TaskStatus.completed) return task.isCompleted;
-    if (status === TaskStatus.uncompleted) return !task.isCompleted;
-    if (!task.dueDate) return false;
-    const today = new Date();
-    if (status === TaskStatus.earlier) return task.dueDate < today;
-    if (status === TaskStatus.today) return isToday(task.dueDate);
-    if (status === TaskStatus.tomorrow) return isTomorrow(task.dueDate);
-    return task.dueDate > today;
-  };
+export interface SaveTaskToServerDto {
+  content: string;
+  folderName?: string;
+  isInMyDay?: boolean;
+  isImportant?: boolean;
+  dueDate?: Date;
+  note?: TaskNote;
+  steps?: TaskStep[];
 }
 
-function filterFolderPredicate(folder: PageTitles) {
-  if (folder === PageTitles.Tasks) {
-    return () => true;
-  }
-  if (folder === PageTitles.Planned) {
-    return (task: ITask) => !!task.dueDate;
-  }
-  if (folder === PageTitles.MyDay) {
-    return (task: ITask) => task.isInMyDay;
-  }
-  if (folder === PageTitles.Important) {
-    return (task: ITask) => task.isImportant;
-  }
-  return (task: ITask) => task.parent === folder;
-}
-
-export type FilteredByStatus = Record<TaskStatus, Observable<ITask[]>>;
+export type FilteredByStatus = Record<TaskStatus, Observable<TasksWithFolder>>;
 
 @Injectable({
   providedIn: 'root',
@@ -186,60 +64,261 @@ export class TaskService {
 
   readonly tasksHashKey = 't-tasks-hash';
 
-  private _tasks = new BehaviorSubject<ITask[]>([] as ITask[]);
+  private _selectedTask = new Subject<Task | null>();
 
-  private _task = new Subject<ITask | null>();
+  private apiUrl = 'http://localhost:8080/api/v1';
 
-  private filteredTasks = new BehaviorSubject<ITask[]>([]);
+  /**
+   * Holds the tasks grouped by folder name as an observable.
+   * This is the main observable that stores the tasks coming from the server.
+   * @private _tasksByFolder$
+   */
+  private _tasksByFolder$ = new BehaviorSubject<Record<string, Task[]>>({});
 
-  constructor(private _snackBar: MatSnackBar) {
-    const tasks = this.loadTasksFromLocalStorage() ?? '[]';
-    this._tasks = new BehaviorSubject(JSON.parse(tasks) as ITask[]);
+  /**
+   * Holds all the tasks ungrouped as an observable.
+   * This will be updated whenever the {@link _tasksByFolder$} observable changes.
+   * @private
+   */
+  private _flatTasks$ = new BehaviorSubject<Task[]>([] as Task[]);
+
+  constructor(
+    private http: HttpClient,
+    private _snackBar: MatSnackBar,
+    private _router: Router,
+  ) {
+    const taskFromSt = this._loadTasksFromLocalStorage() ?? '[]';
+    this._flatTasks$ = new BehaviorSubject(JSON.parse(taskFromSt) as Task[]);
+    this._flatTasks$.subscribe(() => this._saveTasksToLocalStorage());
+
+    this._tasksByFolder$.subscribe((tasksByFolder) => {
+      const flatTasks = getFlatTasks(tasksByFolder);
+      this._flatTasks$.next(flatTasks);
+    });
+
+    this._fetchFoldersWithTasks$();
+
+    this._router.events.subscribe(($event) => {
+      if (!($event instanceof NavigationEnd)) return;
+      const { url: u } = $event;
+      const url = u === '/' ? '/my-day' : u;
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const page = url.split('/')[1];
+      this._fetchFoldersWithTasks$();
+      this.setSelectedTask(null);
+    });
   }
 
-  static toDateString = (date: Date): string =>
-    date
-      .toString()
-      .replace(/[.:a-zA-Z]/g, '')
-      .replace(/ /g, '')
-      .replace(/-/g, '');
+  getSelectedTask() {
+    return this._selectedTask.asObservable();
+  }
 
-  static sortTasks = (a: ITask, b: ITask): number => a.id - b.id;
+  setSelectedTask(task: Task | null) {
+    this._selectedTask.next(task);
+  }
 
-  static taskGeneratedId = (task: ITask): string =>
-    `${task.id}${TaskService.toDateString(
-      task.createdAt,
-    )}${TaskService.toDateString(task.updatedAt)}${task.parent}`;
+  /**
+   * Fetch folders with tasks from the server
+   * @param folderName
+   */
+  getTaskByFolder(
+    folderName: PageTitles | string = DEFAULT_FOLDER.Tasks,
+  ): Observable<TasksWithFolder> {
+    return this._tasksByFolder$.pipe(
+      map((tasksByFolder) => {
+        let tasks = tasksByFolder[folderName.toLowerCase()];
+        if (!isFolderExists(folderName, tasksByFolder)) {
+          this._flatTasks$.subscribe((tasksFromObs) => {
+            tasks = tasksFromObs.filter(filterFolderPredicate(folderName));
+          });
+        }
+        return { tasks, folderName };
+      }),
+    );
+  }
 
-  createTask(props: CreateTaskProps): ITask {
-    const { text, parent: p } = props;
+  getTasksByStatus(status: TaskStatus | TaskStatus[], folder: PageTitles) {
+    // Get tasks by status from the folder one by one and return an object
+    if (Array.isArray(status)) {
+      const filteredTasks: FilteredByStatus = {} as FilteredByStatus;
+      status.forEach((taskStatus) => {
+        const got = this.getTasksByStatus(taskStatus, folder);
+        filteredTasks[taskStatus] = got[taskStatus];
+      });
+      return filteredTasks;
+    }
+
+    // Get tasks by status from the folder and return an object
+    const filtered$ = this.getTaskByFolder(folder) //
+      .pipe(
+        map(({ tasks: ts, folderName: fName }) => {
+          const filteredTasks = ts.filter(filterByStatusPredicate(status));
+          return { tasks: filteredTasks, folderName: fName } as TasksWithFolder;
+        }),
+      );
+    return { [status]: filtered$ } as FilteredByStatus;
+  }
+
+  addNewTask(props: CreateTaskProps) {
+    const createdTask = this._addNewTask(props);
+    return this._saveTask(createdTask);
+  }
+
+  updateTask(task: Task, updateServer = true) {
+    const folderName = task.folderName.toLowerCase();
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    const folderTasks = this._tasksByFolder$.value[folderName] ?? [];
+    const tasks = folderTasks.map((t) => (t.id === task.id ? task : t));
+    this._tasksByFolder$.next({
+      ...this._tasksByFolder$.value,
+      [folderName]: tasks.sort(sortTasks),
+    });
+    if (updateServer) {
+      return this._updateTask$(task);
+    }
+    return of(task);
+  }
+
+  removeTask(task: Task) {
+    const folderName = task.folderName.toLowerCase();
+    const folderTasks = this._tasksByFolder$.value[folderName];
+    const tasks = folderTasks.filter((t) => t.id !== task.id);
+    this._tasksByFolder$.next({
+      ...this._tasksByFolder$.value,
+      [folderName]: tasks,
+    });
+    return this._deleteTask$(task).subscribe(() => {
+      this._snackBar.open(`Task with removed successfully`, 'Dismiss', {
+        duration: 3000,
+      });
+    });
+  }
+
+  addStep(task: Task, step: TaskStep) {
+    const newStep = structuredClone(step);
+    if (step.id === 0) newStep.id = task.steps.length || 1;
+    newStep.taskId = task.id;
+    task.steps.push(newStep);
+    this.updateTask(task, false); // optimistically update the task in the UI
+    this._addNewTaskStep$(newStep).subscribe((stepFromServer) => {
+      newStep.id = stepFromServer.id;
+      this.updateTask(task, false);
+      this._snackBar.open(
+        `Step with id ${stepFromServer.id} is added`,
+        'Dismiss',
+        { duration: 3000 },
+      );
+    });
+  }
+
+  updateStep(task: Task, step: TaskStep) {
+    const steps = task.steps.map((s) => (s.id === step.id ? step : s));
+    const updatedTask = structuredClone(task);
+    updatedTask.steps = steps;
+    this.updateTask(updatedTask, false);
+
+    this._updateTaskStep$(step).subscribe(() => {
+      this._snackBar.open(`Step with id ${step.id} is updated`, 'Dismiss', {
+        duration: 3000,
+      });
+    });
+  }
+
+  removeStep(task: Task, step: TaskStep) {
+    const steps = task.steps.filter((s) => s.id !== step.id);
+    const updatedTask = structuredClone(task);
+    updatedTask.steps = steps;
+    this.updateTask(updatedTask, true);
+    return this._removeTaskStep$(step).subscribe(() => {
+      this._snackBar.open(`Step with id ${step.id} is removed`, 'Dismiss', {
+        duration: 3000,
+      });
+    });
+  }
+
+  toggleTaskIsCompleted(task: Task, isSelected = false) {
+    const updatedTask = structuredClone(task);
+    updatedTask.isCompleted = !task.isCompleted;
+    this.updateTask(updatedTask).subscribe((t) => {
+      if (isSelected) this.setSelectedTask(t);
+      this._snackBar.open(
+        `Task with id ${t.id} is marked as ${
+          t.isCompleted ? 'completed' : 'not completed'
+        }`,
+        'Dismiss',
+        { duration: 3000 },
+      );
+    });
+    return updatedTask;
+  }
+
+  toggleTaskIsImportant(task: Task, isSelected = false) {
+    const updatedTask = structuredClone(task);
+    updatedTask.isImportant = !task.isImportant;
+    this.updateTask(updatedTask).subscribe((t) => {
+      if (isSelected) this.setSelectedTask(t);
+      this._snackBar.open(
+        `Task with id ${t.id} is marked as ${
+          t.isImportant ? 'important' : 'not important'
+        }`,
+        'Dismiss',
+        { duration: 3000 },
+      );
+    });
+    return updatedTask;
+  }
+
+  promoteStepToTask(task: Task, step: TaskStep) {
+    const newTask = this._transformStepToTaskObj(step, task);
+    this.removeStep(task, step);
+    this._saveTask(newTask);
+    this.updateTask(task);
+    this._snackBar.open(
+      `Step with id ${step.id} is promoted to a task`,
+      'Dismiss',
+      { duration: 3000 },
+    );
+  }
+
+  countTasksObservable(folderName?: PageTitles): Observable<number> {
+    return this._flatTasks$.pipe(
+      map((tasks) => {
+        if (folderName) {
+          return tasks.filter(filterFolderPredicate(folderName)).length;
+        }
+        return tasks.length;
+      }),
+    );
+  }
+
+  private _addNewTask(props: CreateTaskProps): Task {
+    const { content, folderName } = props;
     let { isInMyDay, isImportant, dueDate, recurrence } = props;
     const { steps, note } = props;
-    let parent = p ?? PageTitles.Tasks;
+    let fName = folderName ?? DEFAULT_FOLDER.Tasks;
     if (
-      p === PageTitles.MyDay ||
-      p === PageTitles.Important ||
-      p === PageTitles.Planned
+      folderName === DEFAULT_FOLDER.MyDay ||
+      folderName === DEFAULT_FOLDER.Important ||
+      folderName === DEFAULT_FOLDER.Planned
     ) {
-      parent = PageTitles.Tasks;
+      fName = DEFAULT_FOLDER.Tasks;
     }
 
-    if (p === PageTitles.Important) {
+    if (folderName === DEFAULT_FOLDER.Important) {
       isImportant = true;
     }
-    if (p === PageTitles.MyDay) {
+    if (folderName === DEFAULT_FOLDER.MyDay) {
       isInMyDay = true;
     }
-
-    if (p === PageTitles.Planned) {
+    if (folderName === DEFAULT_FOLDER.Planned) {
       dueDate = new Date();
-      recurrence = 'once';
+      recurrence = 'ONCE';
     }
 
     return {
-      id: this._tasks.value.length + 1,
-      text,
-      parent,
+      id: this._flatTasks$.value.length + 1,
+      content,
+      folderName: fName,
       dueDate,
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -247,74 +326,19 @@ export class TaskService {
       isInMyDay: isInMyDay ?? false,
       isImportant: isImportant ?? false,
       steps: steps ?? [],
-      recurrence: recurrence ?? 'once',
-      note: note ?? { text: '' },
+      recurrence: recurrence ?? 'ONCE',
+      note: note ?? { content: '' },
     };
   }
 
-  getSelectedTask() {
-    return this._task.asObservable();
-  }
-
-  setSelection(task: ITask | null) {
-    this._task.next(task);
-  }
-
-  getTaskByFolder(folder?: PageTitles): Observable<ITask[]> {
-    this.getTasks().subscribe((tasks) => {
-      if (folder) {
-        this.filteredTasks.next(tasks.filter(filterFolderPredicate(folder)));
-      } else {
-        this.filteredTasks.next(tasks);
-      }
-    });
-
-    return this.filteredTasks.asObservable();
-  }
-
-  getTasksByStatus(
-    status: TaskStatus | TaskStatus[],
-    folder: PageTitles,
-  ): Observable<ITask[]> | FilteredByStatus {
-    if (Array.isArray(status)) {
-      const filteredTasks: FilteredByStatus = {} as FilteredByStatus;
-      status.forEach((s) => {
-        filteredTasks[s] = this.getTasksByStatus(s, folder) as Observable<
-          ITask[]
-        >;
-      });
-      return filteredTasks;
-    }
-
-    return this.getTaskByFolder(folder).pipe(
-      map((tasks) => tasks.filter(filterByStatusPredicate(status))),
-    );
-  }
-
-  getTasks(callback?: () => void): Observable<ITask[]> {
-    fromPromise(createHash(JSON.stringify(TASKS))).subscribe((hash) => {
-      const hashFromStorage = localStorage.getItem(this.tasksHashKey);
-      if (hashFromStorage && hashFromStorage !== hash) {
-        this._tasks.next(this._tasks.value.sort(TaskService.sortTasks));
-      } else {
-        this._tasks.next(TASKS.sort(TaskService.sortTasks));
-      }
-      this.saveTasksToLocalStorage();
-      if (callback) {
-        callback();
-      }
-    });
-    return this._tasks.asObservable();
-  }
-
-  saveTasksToLocalStorage() {
+  private _saveTasksToLocalStorage() {
     localStorage.setItem(
       this.tasksStorageKey,
-      JSON.stringify(this._tasks.value),
+      JSON.stringify(this._flatTasks$.value),
     );
 
     // create hash of the tasks and save it to local storage
-    createHash(JSON.stringify(this._tasks.value))
+    createHash(JSON.stringify(this._flatTasks$.value))
       .then((hash: string) => {
         localStorage.setItem(this.tasksHashKey, hash);
         return hash;
@@ -324,111 +348,141 @@ export class TaskService {
       );
   }
 
-  loadTasksFromLocalStorage() {
+  private _loadTasksFromLocalStorage() {
     return localStorage.getItem(this.tasksStorageKey);
   }
 
-  clearTasksFromLocalStorage() {
-    localStorage.removeItem(this.tasksStorageKey);
-    localStorage.removeItem(this.tasksHashKey);
-    this._tasks.next([]);
+  private _saveTaskToServer$ = (saveTask: SaveTaskToServerDto) => {
+    return this.http.post<CustomResponse<Task>>(
+      `${this.apiUrl}/tasks`,
+      saveTask,
+    );
+  };
+
+  private _updateTask$ = (task: Task): Observable<Task> => {
+    const { id } = task;
+    const url = `${this.apiUrl}/tasks/${id}`;
+    return this.http
+      .put<CustomResponse<Task>>(url, task)
+      .pipe(map((res) => res.data));
+  };
+
+  private _addNewTaskStep$ = (step: TaskStep): Observable<TaskStep> => {
+    const url = `${this.apiUrl}/steps`;
+    return this.http
+      .post<CustomResponse<TaskStep>>(url, step)
+      .pipe(map((res) => res.data));
+  };
+
+  private _deleteTask$(task: Task): Observable<Task> {
+    const url = `${this.apiUrl}/tasks/${task.id}`;
+    return this.http
+      .delete<CustomResponse<Task>>(url)
+      .pipe(map((res) => res.data));
   }
 
-  addTask(task: ITask) {
-    const newTask = { ...task };
+  private _updateTaskStep$ = (step: TaskStep): Observable<Task> => {
+    const url = `${this.apiUrl}/steps/${step.id}`;
+    return this.http
+      .put<CustomResponse<Task>>(url, step)
+      .pipe(map((res) => res.data));
+  };
+
+  private _removeTaskStep$ = (step: TaskStep): Observable<Task> => {
+    const url = `${this.apiUrl}/steps/${step.id}`;
+    return this.http
+      .delete<CustomResponse<Task>>(url)
+      .pipe(map((res) => res.data));
+  };
+
+  private _saveTask(task: Task) {
+    const newTask = structuredClone(task);
     if (!newTask.id) {
-      newTask.id = this._tasks.value.length + 1;
+      newTask.id = this._flatTasks$.value.length + 1;
     }
-    this._tasks.next(
-      [...this._tasks.value, newTask].sort(TaskService.sortTasks),
-    );
-    this.saveTasksToLocalStorage();
-    this._snackBar.open('Task added successfully', 'Dismiss', {
-      duration: 2000,
-    });
-  }
+    this._saveTaskToLocalObserver(newTask);
 
-  removeTask(task: ITask) {
-    const tasks = this._tasks.value.filter((t) => t.id !== task.id);
-    this._tasks.next(tasks);
-    this.saveTasksToLocalStorage();
-    this._snackBar.open('Task removed successfully', 'Dismiss', {
-      duration: 2000,
-    });
-  }
-
-  updateTask(task: ITask) {
-    const filteredTasks = this._tasks.value.filter((t) => t.id !== task.id);
-    this._tasks.next([...filteredTasks, task].sort(TaskService.sortTasks));
-    this.saveTasksToLocalStorage();
-  }
-
-  addStep(task: ITask, step: ITaskStep) {
-    const newStep = { ...step };
-    if (step.id === 0) newStep.id = task.steps.length || 1;
-    task.steps.push(newStep);
-    this.updateTask(task);
-  }
-
-  updateStep(task: ITask, step: ITaskStep) {
-    const steps = task.steps.map((s) => (s.id === step.id ? step : s));
-    this.updateTask({ ...task, steps });
-  }
-
-  removeStep(task: ITask, step: ITaskStep) {
-    const steps = task.steps.filter((s) => s.id !== step.id);
-    this.updateTask({ ...task, steps });
-  }
-
-  toggleTaskIsCompleted(task: ITask, isSelected = false) {
-    const updatedTask = { ...task, isCompleted: !task.isCompleted };
-    if (isSelected) this.setSelection(updatedTask);
-    this.updateTask(updatedTask);
-    return updatedTask;
-  }
-
-  toggleTaskIsImportant(task: ITask, isSelected = false) {
-    const updatedTask = { ...task, isImportant: !task.isImportant };
-    if (isSelected) this.setSelection(updatedTask);
-    this.updateTask(updatedTask);
-    return updatedTask;
-  }
-
-  promoteStepToTask(task: ITask, step: ITaskStep) {
-    const newTask = this.stepToTask(step, task);
-    this.removeStep(task, step);
-    this.addTask(newTask);
-    this.updateTask(task);
-    this._snackBar.open(
-      `Step with id ${step.id} is promoted to a task`,
-      'Dismiss',
-      { duration: 3000 },
-    );
-  }
-
-  countTasksObservable(folder?: PageTitles): Observable<number> {
-    return this._tasks.pipe(
-      map((tasks) => {
-        if (folder) return tasks.filter(filterFolderPredicate(folder)).length;
-        return tasks.length;
+    return this._saveTaskToServer$({
+      content: newTask.content,
+      folderName: newTask.folderName, // The server will fall back to the folder name if the folder id is not provided or less than 1,
+      isImportant: newTask.isImportant,
+      isInMyDay: newTask.isInMyDay,
+      dueDate: newTask.dueDate,
+      note: newTask.note,
+      steps: newTask.steps,
+    }).pipe(
+      catchError((err) => {
+        this._snackBar.open('Error while saving the task', 'Dismiss', {
+          duration: 5000,
+          politeness: 'assertive',
+          horizontalPosition: 'center',
+          verticalPosition: 'bottom',
+        });
+        return throwError(err);
+      }),
+      map((res) => {
+        res.data.folderName = newTask.folderName;
+        res.data.createdAt = newTask.createdAt;
+        res.data.updatedAt = newTask.updatedAt;
+        this.updateTask(res.data);
+        this._snackBar.open('Task added successfully', 'Dismiss', {
+          duration: 2000,
+        });
+        return res.data;
       }),
     );
   }
 
-  private stepToTask(step: ITaskStep, task: ITask): ITask {
+  private _saveTaskToLocalObserver(newTask: Task) {
+    const folderName = newTask.folderName.toLowerCase();
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    const folderTasks = this._tasksByFolder$.value[folderName] ?? [];
+    folderTasks.push(newTask);
+    this._tasksByFolder$.next({
+      ...this._tasksByFolder$.value,
+      [folderName]: folderTasks.sort(sortTasks),
+    });
+  }
+
+  private _fetchFoldersWithTasks$ = (folderName?: PageTitles | string) => {
+    const params = new URLSearchParams();
+    if (folderName) {
+      params.append('folderName', folderName);
+    }
+    const url = params.size
+      ? `${this.apiUrl}/folders?${params.toString()}`
+      : `${this.apiUrl}/folders`;
+    this.http
+      .get<CustomResponse<Folder[]>>(url) //
+      .subscribe((res) => {
+        const folders = res.data.items;
+        const tasksByFolder = {} as Record<string, Task[]>;
+        folders.forEach((folder) => {
+          tasksByFolder[folder.name.toLowerCase()] = (folder.tasks ?? []).sort(
+            sortTasks,
+          );
+        });
+        this._tasksByFolder$.next(tasksByFolder);
+        // const flatTasks = getFlatTasks(tasksByFolder);
+        // this._flatTasks$.next(flatTasks);
+      });
+  };
+
+  private _transformStepToTaskObj(step: TaskStep, task: Task): Task {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     return {
-      id: this._tasks.value.length + 1,
-      text: step.text,
-      parent: task.parent,
+      id: this._flatTasks$.value.length + 1,
+      content: step.content,
+      folderName: task.folderName,
       isCompleted: step.isCompleted,
       isImportant: false,
       isInMyDay: false,
-      recurrence: 'once',
+      recurrence: 'ONCE',
       createdAt: step.createdAt,
       updatedAt: step.updatedAt,
       steps: [],
       note: {
-        text: '',
+        content: '',
         createdAt: step.createdAt,
         updatedAt: step.updatedAt,
       },

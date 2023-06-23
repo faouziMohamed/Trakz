@@ -2,7 +2,7 @@
   (click)="onClickOnTaskRow($event, task)"
   *ngIf="task"
   [id]="taskGeneratedId(task)"
-  class="select-none cursor-pointer hover:bg-cyan-100 active:scale-[1.01] active:bg-gray-100 focus-within:bg-gray-100 bg-gray-200 rounded px-4 py-2 overflow-hidden"
+  class="select-none cursor-pointer hover:bg-cyan-100 active:scale-[1.01] active:bg-gray-100 focus-within:bg-gray-100 bg-gray-200 rounded px-2 py-4 overflow-hidden"
   tabindex="0"
 >
   <app-task-text-card
@@ -11,38 +11,47 @@
     [task]="task"
   ></app-task-text-card>
   <div
-    class="flex items-center text-gray-600 font-[Ubuntu] text-[0.68rem] gap-1 pointer-events-none select-none flex-wrap"
+    class="flex items-center text-gray-600 pl-2 font-primary text-[0.68rem] gap-1 pointer-events-none select-none flex-wrap"
   >
-    <div *ngIf="task.isInMyDay" class="flex items-center gap-1">
-      <mat-icon class="text-[1.1rem] !h-[1.1rem] !w-[1.1rem]">
+    <div *ngIf="task.isInMyDay" class="flex items-center gap-1 text-[0.9rem]">
+      <mat-icon class="text-[1rem] !h-[0.9rem] !w-[0.9rem]">
         light_mode
       </mat-icon>
       <span>My Day</span>
-      <span class="text-gray-700">•</span>
+      <span class="text-gray-600 text-[1.3rem]">•</span>
     </div>
 
-    <div class="flex items-center gap-1">
-      <span> {{ task.parent }} </span>
-      <span *ngIf="task.steps.length || task.dueDate" class="text-gray-700">
+    <div class="flex items-center text-[0.9rem] gap-1">
+      <span> {{ task.folderName || folderName }} </span>
+      <span
+        *ngIf="task.steps.length || task.dueDate"
+        class="text-[1.3rem] text-gray-600"
+      >
         •
       </span>
     </div>
 
-    <div *ngIf="task.steps.length" class="flex items-center gap-1">
+    <div
+      *ngIf="task.steps.length"
+      class="flex items-center gap-1 text-[0.88rem]"
+    >
       <span>
         {{ countCompletedSteps(task.steps) }} of
         {{ task.steps.length }}
       </span>
-      <span *ngIf="task.dueDate" class="text-gray-700">•</span>
+      <span *ngIf="task.dueDate" class="text-gray-700 text-[1.3rem]">•</span>
     </div>
 
-    <div *ngIf="task.dueDate" class="flex items-center text-gray-700 gap-0.5">
+    <div
+      *ngIf="task.dueDate"
+      class="flex items-center text-gray-700 gap-0.5 text-[0.86rem]"
+    >
       <mat-icon
         [ngClass]="{
           '!text-blue-700': !task.isCompleted && isToday(task.dueDate),
           'text-red-700': !task.isCompleted && isOverdue(task.dueDate)
         }"
-        class="text-[1rem] !h-[1rem] !w-[1rem]"
+        class="text-[0.9rem] !h-[1rem] !w-[1rem]"
       >
         calendar_month
       </mat-icon>
@@ -57,15 +66,15 @@
     </div>
 
     <div
-      *ngIf="task.dueDate && task.recurrence !== 'once'"
+      *ngIf="task.dueDate && task.recurrence && task.recurrence !== 'ONCE'"
       class="flex items-center w-[0.89rem]"
     >
-      <mat-icon class="flex items-center !h-[0.88rem] text-[0.89rem]">
+      <mat-icon class="flex items-center !h-[0.88rem] text-[0.99rem]">
         cached
       </mat-icon>
     </div>
-    <div *ngIf="task.note.text" class="flex w-[0.89rem] items-center">
-      <mat-icon class="flex items-center !h-[0.88rem] text-[0.89rem]">
+    <div *ngIf="task.note?.content" class="flex w-[0.99rem] items-center">
+      <mat-icon class="flex items-center !h-[0.88rem] text-[0.99rem]">
         sticky_note_2
       </mat-icon>
     </div>
