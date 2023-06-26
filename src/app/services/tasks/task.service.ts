@@ -33,6 +33,8 @@ import {
   sortTasks,
 } from '@/utils/trakzUtils';
 
+import { environment } from '../../../environments/environment';
+
 export interface CreateTaskProps {
   content: string;
   folderName?: string;
@@ -66,7 +68,9 @@ export class TaskService {
 
   private _selectedTask = new Subject<Task | null>();
 
-  private apiUrl = 'http://localhost:8080/api/v1';
+  private apiUrl = `${
+    environment.BACKEND_URL || 'http://localhost:8080'
+  }/api/v1`;
 
   /**
    * Holds the tasks grouped by folder name as an observable.
