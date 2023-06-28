@@ -1,9 +1,9 @@
 <div
   (contextmenu)="onRightClickInTheStep($event)"
   *ngIf="step"
-  class="flex task-step pl-2 pt-1 bg-gray-300 bg-opacity-10 hover:bg-opacity-25 justify-between items-start"
+  class="flex task-step pl-2 pt-1 bg-gray-300 bg-opacity-10 hover:bg-opacity-25 justify-between items-center"
 >
-  <div *ngIf="!_editionStarted" class="flex gap-1 w-full">
+  <div *ngIf="!_editionStarted" class="flex items-center gap-1 w-full">
     <mat-icon
       (click)="emitToggleStepIsComplete(step)"
       (mouseout)="onMouseLeaveCompletedIcon()"

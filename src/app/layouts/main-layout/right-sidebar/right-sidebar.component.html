@@ -42,12 +42,13 @@
         class="bg-inherit !flex border-gray-300 rounded border !flex-col"
       >
         <app-task-detail
+          (clear)="clearIsInMyDay()"
+          (detailClick)="toggleIsInMyDay()"
           [iconClasses]="
             task.isInMyDay
               ? 'text-cyan-700 hover:text-cyan-800'
               : 'text-gray-500 hover:text-gray-500'
           "
-          [onClick]="toggleIsInMyDay()"
           [textClasses]="
             task.isInMyDay
               ? 'text-cyan-700 hover:text-cyan-800'
@@ -62,17 +63,21 @@
       <!-- Due date and occurrence management     -->
       <div class="bg-inherit !flex border-gray-300 rounded border !flex-col">
         <app-task-detail
+          (clear)="clearDueDate()"
           [iconClasses]="getTaskDueDateClasses(task.dueDate)"
-          [matMenuTriggerFor]="dueDateMenu"
+          [matMenu]="dueDateMenu"
           [textClasses]="getTaskDueDateClasses(task.dueDate)"
+          clearIconText="Remove due date"
           iconName="event_note"
           text="{{ task.dueDate ? formatDate(task.dueDate) : 'Add due date' }}"
         >
         </app-task-detail>
         <mat-divider class="opacity-30"></mat-divider>
         <app-task-detail
+          (clear)="clearRecurrence()"
+          [disabled]="!task.dueDate"
           [iconClasses]="getTaskDueDateClasses(task.dueDate, true)"
-          [matMenuTriggerFor]="recurrenceMenu"
+          [matMenu]="task.dueDate ? recurrenceMenu : null"
           [textClasses]="getTaskDueDateClasses(task.dueDate, true)"
           [text]="
             task.recurrence
@@ -98,7 +103,7 @@
   </div>
 </div>
 
-<!--DUe date Menu-->
+<!--Due date Menu-->
 <mat-menu
   #dueDateMenu="matMenu"
   class="!py-0 !min-w-[11.25rem] task-due-date-menu"
@@ -137,6 +142,15 @@
       <span class="pl-4 text-[0.88rem] text-gray-500">
         {{ dayFromToday('next week') }}
       </span>
+    </button>
+    <mat-divider></mat-divider>
+    <button
+      (click)="setCustomDueDate()"
+      class="!text-[0.8rem] !flex items-center"
+      mat-menu-item
+    >
+      <mat-icon class="text-[1rem] !h-[1rem]">edit_calendar</mat-icon>
+      <span class="grow w-full"> Pick a date </span>
     </button>
   </ng-template>
 </mat-menu>

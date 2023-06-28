@@ -51,7 +51,7 @@ export interface SaveTaskToServerDto {
   folderName?: string;
   isInMyDay?: boolean;
   isImportant?: boolean;
-  dueDate?: Date;
+  dueDate?: Date | null;
   note?: TaskNote;
   steps?: TaskStep[];
 }

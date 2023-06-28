@@ -2,6 +2,7 @@ export interface CustomRecurrence {
   every: number;
   unit: 'day' | 'days' | 'week' | 'month' | 'year';
 }
+
 export type Recurrence =
   | 'DAILY'
   | 'WEEKDAYS'
@@ -40,13 +41,13 @@ export interface Task extends TimeStampsDate {
   id: number;
   folderName: string;
   // folder: Folder;
-  dueDate?: Date;
+  dueDate?: Date | null;
   content: string;
   isInMyDay: boolean;
   isImportant: boolean;
   isCompleted: boolean;
   steps: TaskStep[];
-  recurrence?: Recurrence;
+  recurrence?: Recurrence | null;
   note?: TaskNote;
 }
 

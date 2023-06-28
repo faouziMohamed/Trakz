@@ -1,25 +1,33 @@
 <div
-  (click)="onClick()"
-  class="cursor-pointer flex pl-2 pt-1 bg-gray-300 active:bg-opacity-100 focus-within:bg-opacity-90 bg-opacity-10 hover:bg-opacity-95 justify-between items-center"
-  tabindex="0"
+  (click)="onContainerClick($event)"
+  class="flex cursor-pointer justify-between bg-gray-300 active:bg-opacity-100 focus-within:bg-opacity-90 bg-opacity-10 hover:bg-opacity-95 items-center"
 >
-  <div class="flex gap-1">
-    <mat-icon
-      [ngClass]="iconClasses"
-      class="basis-auto !w-[1rem] !h-[1.4rem] text-[1rem] shrink-0 !flex items-center"
-    >
-      {{ iconName }}
-    </mat-icon>
-    <p
-      [ngClass]="textClasses"
-      class="!text-[0.8rem] focus-visible:outline-none !font-[Ubuntu] !m-0"
-    >
-      {{ text || 'No text' }}
-    </p>
+  <div
+    [matMenuTriggerFor]="matMenu"
+    class="flex pl-2 pt-1 grow items-center self-stretch"
+    role="button"
+    tabindex="0"
+  >
+    <div class="flex gap-1" role="button" tabindex="0">
+      <mat-icon
+        [ngClass]="iconClasses"
+        class="basis-auto !w-[1rem] !h-[1.4rem] text-[1rem] shrink-0 !flex items-center"
+      >
+        {{ iconName }}
+      </mat-icon>
+      <p
+        [ngClass]="textClasses"
+        class="!text-[0.8rem] focus-visible:outline-none !font-[Ubuntu] !m-0"
+      >
+        {{ text || 'No text' }}
+      </p>
+    </div>
   </div>
   <button
-    (click)="onClose()"
+    (click)="onClearClick()"
+    [title]="clearIconText"
     class="basis-auto !flex !text-center items-center self-center"
+    disabled="{{ disabled }}"
     mat-icon-button
   >
     <mat-icon

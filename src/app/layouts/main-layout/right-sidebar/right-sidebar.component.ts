@@ -91,11 +91,15 @@ export class RightSidebarComponent implements OnDestroy, OnInit {
   }
 
   toggleIsInMyDay() {
-    return () => {
-      if (!this.task) return;
-      this.task.isInMyDay = !this.task.isInMyDay;
-      this.triggerCacheAndServerUpdate();
-    };
+    if (!this.task) return;
+    this.task.isInMyDay = !this.task.isInMyDay;
+    this.triggerCacheAndServerUpdate();
+  }
+
+  clearIsInMyDay() {
+    if (!this.task?.isInMyDay) return;
+    this.task.isInMyDay = false;
+    this.triggerCacheAndServerUpdate();
   }
 
   addStep(step: TaskStep) {
@@ -197,6 +201,24 @@ export class RightSidebarComponent implements OnDestroy, OnInit {
   setRecurrence(recurrence: Recurrence) {
     if (!this.task) return;
     this.task.recurrence = recurrence;
+    this.triggerCacheAndServerUpdate();
+  }
+
+  clearDueDate() {
+    if (!this.task?.dueDate) return;
+    this.task.dueDate = null;
+    this.triggerCacheAndServerUpdate();
+  }
+
+  clearRecurrence() {
+    if (!this.task?.recurrence) return;
+    this.task.recurrence = null;
+    this.triggerCacheAndServerUpdate();
+  }
+
+  setCustomDueDate(date?: Date) {
+    if (!this.task) return;
+    this.task.dueDate = date;
     this.triggerCacheAndServerUpdate();
   }
 
