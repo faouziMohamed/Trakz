@@ -3,6 +3,7 @@ import { LayoutModule } from '@angular/cdk/layout';
 import { DatePipe, NgOptimizedImage } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatLineModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
@@ -93,6 +94,7 @@ import { TaskGroupListComponent } from './pages/tasks/task-group-list/task-group
     NgOptimizedImage,
     HttpClientModule,
     MatLineModule,
+    FormsModule,
   ],
   providers: [DatePipe],
   bootstrap: [AppComponent],

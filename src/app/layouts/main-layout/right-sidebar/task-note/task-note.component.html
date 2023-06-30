@@ -2,14 +2,25 @@
   class="bg-inherit !flex border-gray-300 focus-within:border-gray-400 rounded border !flex-col"
 >
   <textarea
+    (keyup)="onUserTyping($event)"
+    [(ngModel)]="task.note.content"
     class="w-full h-32 p-2 border-none resize-none focus-visible:outline-none rounded bg-inherit !text-[0.78rem] text-slate-600"
     placeholder="Add a note"
-    >{{ note?.content || '' }}</textarea
+    >{{ task.note?.content || '' }}</textarea
   >
-  <ng-container *ngIf="note">
+  <ng-container *ngIf="task.note">
     <mat-divider class="opacity-30"></mat-divider>
-    <small class="text-gray-500 !text-[0.68rem] p-0.5 text-center">
-      Updated on {{ note.updatedAt | date : 'EEE, MMM d' }}
+    <small
+      *ngIf="!isTaskBeingUpdate"
+      class="text-gray-500 !text-[0.68rem] p-0.5 text-center"
+    >
+      Last saved {{ getLastUpdateDate() }}
+    </small>
+    <small
+      *ngIf="isTaskBeingUpdate"
+      class="text-gray-500 !text-[0.68rem] p-0.5 text-center"
+    >
+      Saving...
     </small>
   </ng-container>
 </div>

@@ -26,8 +26,8 @@ export interface TaskStep extends TimeStampsDate {
 
 export interface TaskNote {
   content: string | '';
-  createdAt?: TimeStampsDate['createdAt'];
-  updatedAt?: TimeStampsDate['updatedAt'];
+  createdAt: TimeStampsDate['createdAt'];
+  updatedAt: TimeStampsDate['updatedAt'];
 }
 
 export interface Folder {
@@ -48,7 +48,7 @@ export interface Task extends TimeStampsDate {
   isCompleted: boolean;
   steps: TaskStep[];
   recurrence?: Recurrence | null;
-  note?: TaskNote;
+  note: TaskNote;
 }
 
 export enum TaskStatus {

@@ -331,7 +331,11 @@ export class TaskService {
       isImportant: isImportant ?? false,
       steps: steps ?? [],
       recurrence: recurrence ?? 'ONCE',
-      note: note ?? { content: '' },
+      note: note ?? {
+        content: '',
+        updatedAt: new Date(),
+        createdAt: new Date(),
+      },
     };
   }
 
@@ -362,6 +366,12 @@ export class TaskService {
       saveTask,
     );
   };
+
+  // private _updateTaskNote$ = (note: string, taskID: number) => {
+  //   return this.http.patch<TaskNote>(`${this.apiUrl}/tasks/${taskID}/note`, {
+  //     content: note,
+  //   });
+  // };
 
   private _updateTask$ = (task: Task): Observable<Task> => {
     const { id } = task;
@@ -429,6 +439,8 @@ export class TaskService {
         res.data.createdAt = newTask.createdAt;
         res.data.updatedAt = newTask.updatedAt;
         this.updateTask(res.data);
+        newTask.id = res.data.id;
+
         this._snackBar.open('Task added successfully', 'Dismiss', {
           duration: 2000,
         });

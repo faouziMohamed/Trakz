@@ -23,6 +23,8 @@ export class RightSidebarComponent implements OnDestroy, OnInit {
 
   currentTaskId: string | undefined;
 
+  shouldShowNoteTextarea = true;
+
   protected readonly Date = Date;
 
   protected readonly capitalizeFirstLetter = capitalizeFirstLetter;
@@ -57,16 +59,19 @@ export class RightSidebarComponent implements OnDestroy, OnInit {
     this._taskObserver = this._tasksService
       .getSelectedTask()
       .subscribe((task) => {
-        if (task) {
-          const taskId = taskGeneratedId(task);
-          // If clicked on the same task, close the right sidebar
-          if (taskId === this.currentTaskId) {
-            this.onRightSidebarClose();
-            return;
-          }
-          this.task = task;
-          this.currentTaskId = taskId;
+        if (!task) {
+          this.shouldShowNoteTextarea = false;
+          return;
         }
+        this.shouldShowNoteTextarea = false;
+        this.shouldShowNoteTextarea = true;
+        const taskId = taskGeneratedId(task);
+        if (taskId === this.currentTaskId) {
+          this.onRightSidebarClose();
+          return;
+        }
+        this.task = task;
+        this.currentTaskId = taskId;
       });
   }
 
@@ -85,6 +90,7 @@ export class RightSidebarComponent implements OnDestroy, OnInit {
   }
 
   onRightSidebarClose() {
+    this.shouldShowNoteTextarea = false;
     this._tasksService.setSelectedTask(null);
     this.task = undefined;
     this.currentTaskId = undefined;

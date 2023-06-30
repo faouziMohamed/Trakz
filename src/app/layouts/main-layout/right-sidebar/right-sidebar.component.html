@@ -90,7 +90,10 @@
         >
         </app-task-detail>
       </div>
-      <app-task-note [note]="task.note"></app-task-note>
+      <app-task-note
+        *ngIf="shouldShowNoteTextarea"
+        [task]="task"
+      ></app-task-note>
     </div>
   </div>
   <div

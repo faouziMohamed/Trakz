@@ -11,15 +11,20 @@ export function isOverdue(date: Date) {
 
 export function isToday(date: Date | string) {
   const today = new Date();
-  const dueDate = new Date(date);
+  const comparedDate = new Date(date);
   return (
-    dueDate.getDate() === today.getDate() &&
-    dueDate.getMonth() === today.getMonth() &&
-    dueDate.getFullYear() === today.getFullYear() &&
-    dueDate.getHours() <= 23 &&
-    dueDate.getMinutes() <= 59 &&
-    dueDate.getSeconds() <= 59
+    comparedDate.getDate() === today.getDate() &&
+    comparedDate.getMonth() === today.getMonth() &&
+    comparedDate.getFullYear() === today.getFullYear() &&
+    comparedDate.getHours() <= 23 &&
+    comparedDate.getMinutes() <= 59 &&
+    comparedDate.getSeconds() <= 59
   );
+}
+
+export function isThisYear(date: Date) {
+  const today = new Date();
+  return date.getFullYear() === today.getFullYear();
 }
 
 export function capitalizeFirstLetter(string: string) {
@@ -151,4 +156,44 @@ export function taskGeneratedId(task: Task): string {
   const d1 = toDateString(task.createdAt);
   const d2 = toDateString(task.updatedAt);
   return `${d1}${d2}${task.folderName}`;
+}
+
+/**
+ * - If today show time only (h:mm a) else show date and time (EEE, MMM d y, h:mm a)
+ * - If yesterday show 'Yesterday at ' + time (h:mm a)
+ * - If this year show date and time (EEE, MMM d, h:mm a)
+ * - else show date only (EEE, MMM d y)
+ * @example: Today at 2:30 PM, Yesterday at 2:30 PM, Mon, Jan 1, 2021, 2:30 PM, Mon, Jan 1, 2021
+ * @param date
+ * @param locale
+ *  */
+export function passedTimeFormatted(date: string | Date, locale = 'en-US') {
+  const usedDate = new Date(date);
+  const formatOpt: Record<
+    'today' | 'yesterday' | 'thisYear' | 'other',
+    Intl.DateTimeFormatOptions
+  > = {
+    today: { hour: 'numeric', minute: 'numeric' },
+    yesterday: { hour: 'numeric', minute: 'numeric' },
+    thisYear: { weekday: 'short', hour: 'numeric', minute: 'numeric' },
+    other: {
+      weekday: 'short',
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+    },
+  };
+  const toDayYesterdayFmt = new Intl.DateTimeFormat(locale, formatOpt.today);
+  if (isToday(usedDate)) {
+    return `Today at ${toDayYesterdayFmt.format(usedDate)}`;
+  }
+  if (isYesterday(usedDate)) {
+    return `Yesterday at ${toDayYesterdayFmt.format(usedDate)}`;
+  }
+  const thisYearFmt = new Intl.DateTimeFormat(locale, formatOpt.thisYear);
+  if (isThisYear(usedDate)) {
+    return thisYearFmt.format(usedDate);
+  }
+  const otherFmt = new Intl.DateTimeFormat(locale, formatOpt.other);
+  return otherFmt.format(usedDate);
 }

@@ -18,7 +18,7 @@
     "push-release": "git push --follow-tags origin main",
     "prepare": "husky install",
     "container:run": "docker compose -f docker-compose.yml up",
-    "container:build": "docker build -t mfaouzi ."
+    "container:build": "docker build -t trakz ."
   },
   "private": true,
   "dependencies": {

@@ -65,6 +65,7 @@ export class AddTaskInputComponent implements OnInit {
       .subscribe((task) => {
         // eslint-disable-next-line no-param-reassign
         taskInput.value = '';
+
         // scroll to the task that was just added to the list of tasks in the DOM
         setTimeout(() => {
           AddTaskInputComponent.scrollInToNewAddedTask(task);
